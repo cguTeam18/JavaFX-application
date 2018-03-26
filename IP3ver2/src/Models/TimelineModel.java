@@ -117,17 +117,13 @@ public class TimelineModel implements Serializable {
     }
     
     public void addEvent(EventModel event) {
-        ArrayList events = this.timelineEvents;
-        if(!events.contains(event)){
-            events.add(event);
+        if(!this.timelineEvents.contains(event)){
+            this.timelineEvents.add(event);
         }
     }
     
-    public void getEvents() {
-        ArrayList<EventModel> events = this.timelineEvents;
-        events.forEach((event) -> {
-            event.getEventTitle();
-        });
+    public ArrayList getEvents() {
+        return this.timelineEvents;
     }
     
     public void deleteEvent(EventModel event) {

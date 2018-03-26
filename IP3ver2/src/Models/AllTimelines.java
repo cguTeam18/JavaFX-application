@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import javafx.collections.ObservableList;
 
 public class AllTimelines {
     
@@ -264,11 +265,11 @@ public class AllTimelines {
         AddTimeline(timeline);
     }
     
-    public void getTimelineEvents(String timelineIdKey, String timelineIdVal) throws Exception {
+    public void getTimelineEvents(String timelineIdVal) throws Exception {
             TimelineModel timeline;
             EventModel event;
             
-            String[] separatedValue = get.sendGetLinkedEvents(timelineIdKey, timelineIdVal);
+            String[] separatedValue = get.sendGetLinkedEvents(timelineIdVal);
             
         for(int i =0; i<separatedValue.length; i++) {
             String newString = separatedValue[i];
@@ -320,6 +321,33 @@ public class AllTimelines {
            }
             }
         }
+    
+    public /**ObservableList<EventModel>**/void getLinkedEvents(EventModel event, String eventIdVal) throws Exception {
+        String[] separatedValue = get.sendGetLinkedEvents(eventIdVal);
+        
+        for(int i =0; i<separatedValue.length; i++) {
+            
+            String newString = separatedValue[i];
+            String finalNewString = newString.replaceAll("\"","");
+                    
+            Scanner readString = new Scanner(finalNewString);
+            readString.useDelimiter(",");
+            String masterEventId;
+            String linkedEventId;
+            masterEventId = readString.next();
+            linkedEventId = readString.next();
+            String finalMasterId = masterEventId.replaceAll("\\s+", "");
+            finalMasterId = finalMasterId.replaceAll("\\{", "");
+            finalMasterId = finalMasterId.replaceAll("\\[","");
+            finalMasterId = finalMasterId.replaceAll("\\]", "");
+            finalMasterId = finalMasterId.replace("TimelineEvent","");
+            finalMasterId = finalMasterId.replace("Id:","");
+            System.out.println(event.getEventId() + finalMasterId);
+            if(event.getEventId().equals(masterEventId)){
+                
+            }
+        }
+    }
     public void addTimelineObject(String timelineTitle) throws ParseException, Exception{
         TimelineModel timeline = new TimelineModel(timelineTitle);
         AddTimeline(timeline);

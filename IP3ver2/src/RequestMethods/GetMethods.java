@@ -123,9 +123,9 @@ public class GetMethods {
                 
     }
     
-    public String[] sendGetLinkedEvents(String timeLineIdKey, String timeLineIdVal) throws Exception {
+    public String[] sendGetLinkedEvents(String timeLineIdVal) throws Exception {
         HttpURLConnection con = setAuthToken("https://gcu.ideagen-development.com/Timeline/GetEvents", "GET");
-        con.setRequestProperty(timeLineIdKey, timeLineIdVal);
+        con.setRequestProperty("timeLineId", timeLineIdVal);
         int responseCode = con.getResponseCode();
         System.out.println("Sending GET request to: https://gcu.ideagen-development.com/Timeline/GetEvents");
         System.out.println("Response code: " + responseCode);
@@ -166,10 +166,10 @@ public class GetMethods {
         
     }
     
-    public void sendGetLinkedTimelineEvents(String TimelineEventIdKey, String TimelineEventIdVal) throws Exception {
+    public String[] sendGetLinkedTimelineEvents(String TimelineEventIdVal) throws Exception {
         
         HttpURLConnection con = setAuthToken("https://gcu.ideagen-development.com/TimelineEvent/GetLinkedTimelineEvents", "GET");
-        con.setRequestProperty(TimelineEventIdKey, TimelineEventIdVal);
+        con.setRequestProperty("TimelineEventId", TimelineEventIdVal);
         int responseCode = con.getResponseCode();
         System.out.println("Sending GET request to: https://gcu.ideagen-development.com/TimelineEvent/GetLinkedTimelineEvents" );
         System.out.println("Response code: " + responseCode);
@@ -183,7 +183,11 @@ public class GetMethods {
 			response.append(inputLine);
 		}
 		in.close();
-                System.out.println(response.toString());
+                String value = (response.toString());
+                System.out.println(value);
+                String[] separatedValue = value.split("}");
+                
+                return separatedValue;
         
     }
     

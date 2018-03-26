@@ -14,6 +14,7 @@ import Models.EventModel;
 import Models.AllTimelines;
 import RequestMethods.GetMethods;
 import RequestMethods.PutMethods;
+import ip3ver2.IP3ver2;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,46 +33,62 @@ import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextField;
 
 public class TableController implements Initializable {
 
     GetMethods get;
     PutMethods put;
-    ObservableList<TimelineModel> timelines = FXCollections.observableArrayList();
-    ObservableList<EventModel> events = FXCollections.observableArrayList();
+    public static TimelineModel selectedTimeline;
     
     @FXML
     TableView tableview;
+    
+    @FXML
+    TextField timelineTitleField;
 
     public TableController() {
         get = new GetMethods();
         put = new PutMethods();
     }
 
-    @FXML
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        
 
-    }
-
+    @Override
     public void initialize(URL url, ResourceBundle rb) {
-        TableColumn timelineIdCol = new TableColumn ("Timeline ID");
         TableColumn timelineTitleCol = new TableColumn("Timeline Title");
         TableColumn dateCreatedCol = new TableColumn("Date Created");
-        try {
-            createTimelineObjects();
-        } catch (Exception ex) {
-            Logger.getLogger(TableController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        timelineIdCol.setCellValueFactory(new PropertyValueFactory("timelineId"));
         timelineTitleCol.setCellValueFactory(new PropertyValueFactory("timelineTitle"));
         dateCreatedCol.setCellValueFactory(new PropertyValueFactory("dateCreatedString"));
         
-        this.tableview.getColumns().addAll(new Object[]{timelineIdCol, timelineTitleCol, dateCreatedCol});
+        this.tableview.getColumns().addAll(new Object[]{timelineTitleCol, dateCreatedCol});
 
-        this.tableview.setItems(timelines);
+        this.tableview.setItems(IP3ver2.timelines);
+    }
+    
+    @FXML
+    private String getTimelineTitle() {
+        String timelineTitleStr = null;
+        if(!timelineTitleField.getText().equals("")) {
+            timelineTitleStr = timelineTitleField.getText();
+            return timelineTitleStr;
+        }
+        else {
+            timelineTitleStr = "";
+            Alert alert = new Alert(AlertType.WARNING, "No title has been entered!");
+            alert.showAndWait()
+            .filter(response -> response == ButtonType.OK)
+            .ifPresent(response -> System.out.println("Null title box warning issued: "));
+            System.out.println("Title has not been entered");
+        }
+        return timelineTitleStr;
+        
+
     }
 
     @FXML
@@ -85,6 +102,35 @@ public class TableController implements Initializable {
         
 
     }
+    
+    @FXML
+    private void addTimelineToRows(ActionEvent event) throws Exception {
+        String title = getTimelineTitle();
+        if(!title.equals("")){
+            addTimelineObject(title);
+        }
+    }
+    
+    @FXML 
+    private void viewSelectedTimeline(ActionEvent event) throws Exception {
+        
+        TimelineModel object = (TimelineModel) this.tableview.getSelectionModel().getSelectedItems().get(0);
+        if(IP3ver2.timelines.contains(object)){
+        selectedTimeline = object;
+        Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/viewTimeline.fxml"));
+        Scene scene = new Scene(viewRoot);
+        IP3ver2.currentStage.setScene(scene);
+        }
+        else{
+            Alert alert = new Alert(AlertType.WARNING, "Please select a timeline to view");
+            alert.showAndWait()
+            .filter(response -> response == ButtonType.OK)
+            .ifPresent(response -> System.out.println("Null timeline object warning issued: "));
+            System.out.println("Timeline has not been selected");
+        }
+       
+    }
+    
     public void createTimelineObjects() throws Exception {
         
         String[] separatedValue = get.sendGetAllTimelines();
@@ -118,12 +164,12 @@ public class TableController implements Initializable {
                     finalId = finalId.replaceAll("\\s+", "");
                     System.out.println(finalId + finalTitle + longTimestamp);
                     TimelineModel timeline = new TimelineModel(finalId, finalTitle, longTimestamp);
-                    timelines.add(timeline);    
+                    IP3ver2.timelines.add(timeline);    
                 }
     }
     
     public TimelineModel getTimeline(String timelineId) {
-        for(TimelineModel timeline:this.timelines) {
+        for(TimelineModel timeline:IP3ver2.timelines) {
             if(timeline.getTimelineId().equals(timelineId)){
                 return timeline;
             }
@@ -132,19 +178,19 @@ public class TableController implements Initializable {
     }
     
     public void addTimeline(TimelineModel timeline) {
-        if(!timelines.contains(timeline)){
-            timelines.add(timeline);
+        if(!IP3ver2.timelines.contains(timeline)){
+            IP3ver2.timelines.add(timeline);
         }
     }
     
     public void deleteTimeline(TimelineModel timeline) {
-        if(timelines.contains(timeline)){
-            timelines.remove(timeline);
+        if(IP3ver2.timelines.contains(timeline)){
+            IP3ver2.timelines.remove(timeline);
         }
     }
     
     public EventModel getEvent(String eventId) {
-        for(EventModel event:events) {
+        for(EventModel event:IP3ver2.events) {
             if(eventId.equals(event.getEventId())) {
                 return event;
             }
@@ -153,14 +199,14 @@ public class TableController implements Initializable {
     }
     
     public void addEvent(EventModel event) {
-        if(!events.contains(event)) {
-            events.add(event);
+        if(!IP3ver2.events.contains(event)) {
+            IP3ver2.events.add(event);
         }
     }
     
     public void deleteEvent(EventModel event) {
-        if(events.contains(event)){
-            events.remove(event);
+        if(IP3ver2.events.contains(event)){
+            IP3ver2.events.remove(event);
         }
     }
     
