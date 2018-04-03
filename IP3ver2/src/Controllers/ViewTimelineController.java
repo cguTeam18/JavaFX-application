@@ -25,9 +25,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
@@ -46,6 +49,7 @@ public class ViewTimelineController implements Initializable {
     GetMethods get;
     PutMethods put;
     private TimelineModel selectedTimeline;
+    public static EventModel selectedEvent;
     private ArrayList<EventModel> events = new ArrayList();
     
     @FXML
@@ -54,11 +58,12 @@ public class ViewTimelineController implements Initializable {
     @FXML
     Label timelineTitleLbl;
     
-    @FXML
-    VBox vBoxOuter;
     
     @FXML
     HBox HBoxOuter;
+    
+    @FXML
+    Button newEventBtn;
     
     
     public ViewTimelineController() throws Exception {
@@ -71,7 +76,6 @@ public class ViewTimelineController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
- 
               Group root = new Group();
               Scene scene = new Scene(root, 300, 200);
               for(int i=0; i<events.size();i++) {
@@ -131,6 +135,102 @@ public class ViewTimelineController implements Initializable {
         Scene scene = new Scene(viewRoot);
         IP3ver2.currentStage.setScene(scene);
         this.selectedTimeline = null;
+    }
+    
+    @FXML
+    private void viewAddEvent(ActionEvent event) throws Exception {
+        Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/AddEvent.fxml"));
+        Scene scene = new Scene(viewRoot);
+        IP3ver2.currentStage.setScene(scene);
+    }
+    
+    @FXML
+    private void viewEditEvent(ActionEvent event) throws Exception {
+        for(int i = 0; i<this.HBoxOuter.getChildren().size(); i++) {
+        Node nodeOut = this.HBoxOuter.getChildren().get(i);
+        if(nodeOut instanceof VBox) {
+            for(Node nodeIn:((VBox)nodeOut).getChildren()) {
+                if(nodeIn instanceof TableView) {
+                    EventModel object = (EventModel)((TableView) nodeIn).getSelectionModel().getSelectedItems().get(0);
+                    if(IP3ver2.events.contains(object)){
+                        selectedEvent = object;
+                        Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/EditEvent.fxml"));
+                        Scene scene = new Scene(viewRoot);
+                        IP3ver2.currentStage.setScene(scene);
+                    }
+                }
+            }
+        }
+        }
+    }
+    
+    @FXML
+    private void viewEvent(ActionEvent event) throws Exception {
+        for(int i = 0; i<this.HBoxOuter.getChildren().size(); i++) {
+        Node nodeOut = this.HBoxOuter.getChildren().get(i);
+        if(nodeOut instanceof VBox) {
+            for(Node nodeIn:((VBox)nodeOut).getChildren()) {
+                if(nodeIn instanceof TableView) {
+                    EventModel object = (EventModel)((TableView) nodeIn).getSelectionModel().getSelectedItems().get(0);
+                    if(IP3ver2.events.contains(object)){
+                        selectedEvent = object;
+                        Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/viewEvent.fxml"));
+                        Scene scene = new Scene(viewRoot);
+                        IP3ver2.currentStage.setScene(scene);
+                    }
+                }
+            }
+        }
+        }
+        
+    }
+    
+    @FXML
+    private void deleteEventFromTimeline(ActionEvent event) throws Exception {
+        for(int i = 0; i<this.HBoxOuter.getChildren().size(); i++) {
+        Node nodeOut = this.HBoxOuter.getChildren().get(i);
+        if(nodeOut instanceof VBox) {
+            for(Node nodeIn:((VBox)nodeOut).getChildren()) {
+                if(nodeIn instanceof TableView) {
+                    EventModel object = (EventModel)((TableView) nodeIn).getSelectionModel().getSelectedItems().get(0);
+                    if(IP3ver2.events.contains(object)){
+                        String eventId = object.getEventId();
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this event?");
+                        alert.showAndWait()
+                        .filter(response -> response == ButtonType.OK)
+                        .ifPresent(response -> {
+                            try {
+                                deleteEventObject(eventId);
+                                Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/viewTimeline.fxml"));
+                                Scene scene = new Scene(viewRoot);
+                                IP3ver2.currentStage.setScene(scene);
+                            } catch (Exception ex) {
+                                Logger.getLogger(ViewTimelineController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        });
+                    }
+                }
+            }
+        }
+        }
+    }
+    
+    public void deleteEvent(EventModel event) {
+        if(IP3ver2.events.contains(event)){
+            IP3ver2.events.remove(event);
+        }
+    }
+    
+    public void deleteEventObject(String eventId) throws Exception {
+        EventModel event = getEvent(eventId);
+        if(event != null) {
+            put.unlinkEvent(this.selectedTimeline.getTimelineId(), event.getEventId());
+            put.deleteTimelineEvent(event.getEventId());
+            deleteEvent(event);
+        }
+        else{
+            System.out.println("Event does not exist");
+        }
     }
     
     public void getTimelineObjectLinkedEvents() throws Exception {

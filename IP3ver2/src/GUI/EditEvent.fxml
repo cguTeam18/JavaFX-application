@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.EditEventController">
+   <children>
+      <Button id="btnBack" fx:id="btnBack" layoutX="35.0" layoutY="24.0" mnemonicParsing="false" onAction="#backToTimeline" text="Back To Events" AnchorPane.leftAnchor="25.0" />
+      <Label id="lblNewTime" fx:id="lblNewTime" layoutX="35.0" layoutY="65.0" text="New Timeline" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="60.0">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font></Label>
+      <Label id="lblCreate" layoutX="272.0" layoutY="65.0" prefHeight="20.0" prefWidth="136.0" text="Create New Event" textAlignment="JUSTIFY" AnchorPane.bottomAnchor="429.0" AnchorPane.leftAnchor="272.0" AnchorPane.rightAnchor="218.0" AnchorPane.topAnchor="60.0">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+      <Button id="lblSave" fx:id="btnSaveEvent" layoutX="538.0" layoutY="24.0" mnemonicParsing="false" onAction="#editEvent" text="Save Event" AnchorPane.rightAnchor="25.0" />
+      <Label id="lblEvent" layoutX="169.0" layoutY="111.0" text="Event Title" AnchorPane.leftAnchor="150.0" />
+      <Label id="lblDate" layoutX="169.0" layoutY="160.0" text="Date &amp; Time" AnchorPane.leftAnchor="150.0" />
+      <DatePicker id="dateField" fx:id="dateField" layoutX="253.0" layoutY="156.0" />
+      <TextField fx:id="titleField" layoutX="253.0" layoutY="107.0" prefHeight="25.0" prefWidth="266.0" />
+      <TextField fx:id="timeField" layoutX="446.0" layoutY="156.0" prefHeight="25.0" prefWidth="73.0" />
+      <Label id="lblDesc" layoutX="169.0" layoutY="202.0" text="Description" AnchorPane.leftAnchor="150.0" />
+      <TextArea fx:id="descField" layoutX="253.0" layoutY="202.0" prefHeight="77.0" prefWidth="266.0" />
+      <Label layoutX="150.0" layoutY="359.0" text="Location" />
+      <TextArea fx:id="locationField" layoutX="253.0" layoutY="359.0" prefHeight="77.0" prefWidth="266.0" />
+      <Label layoutX="150.0" layoutY="459.0" text="Attachment" />
+      <Button id="btnBack" fx:id="btnBack1" layoutX="261.0" layoutY="455.0" mnemonicParsing="false" text="Browse Files" />
+   </children>
+</AnchorPane>

@@ -95,7 +95,16 @@ public class TableController implements Initializable {
     private void deleteRowFromTable(ActionEvent event) throws Exception {
         TimelineModel object = (TimelineModel) this.tableview.getSelectionModel().getSelectedItems().get(0);
         String timelineId = object.getTimelineId();
-        deleteTimelineObject(timelineId);
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this event?");
+                        alert.showAndWait()
+                        .filter(response -> response == ButtonType.OK)
+                        .ifPresent(response -> {
+                            try {
+                                deleteTimelineObject(timelineId);
+                            } catch (Exception ex) {
+                                Logger.getLogger(ViewTimelineController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        });
         //this.tableview.getItems().removeAll(new Object[]{this.tableview.getSelectionModel().getSelectedItem()});
         
         //deleteTimelineObject

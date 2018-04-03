@@ -9,11 +9,11 @@
 
 <AnchorPane fx:id="deleteRows" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.TableController">
     <children>
-        <TableView fx:id="tableview" editable="true" layoutX="235.0" layoutY="14.0" prefHeight="484.0" prefWidth="356.0" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" />
-      <HBox alignment="bottom_right" spacing="10" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="235.0" GridPane.rowIndex="2">
+        <TableView fx:id="tableview" editable="true" layoutX="205.0" layoutY="56.0" prefHeight="484.0" prefWidth="356.0" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="39.0" AnchorPane.topAnchor="56.0" />
+      <HBox alignment="bottom_right" layoutX="224.0" layoutY="14.0" spacing="10" AnchorPane.bottomAnchor="561.0" AnchorPane.leftAnchor="224.0" GridPane.rowIndex="2">
          <children>
            <Button onAction="#addTimelineToRows" prefHeight="25.0" prefWidth="65.0" text="Add" />
-           <TextField fx:id="timelineTitleField" prefWidth="90" promptText="Timeline Title" />
+           <TextField fx:id="timelineTitleField" prefHeight="25.0" prefWidth="262.0" promptText="Timeline Title" />
          </children>
     </HBox>
    <Button id="btnView" fx:id="btnView" layoutX="72.0" layoutY="133.0" mnemonicParsing="false" onAction="#viewSelectedTimeline" prefHeight="25.0" prefWidth="99.0" text="View Timeline" AnchorPane.leftAnchor="50.0" />

@@ -59,6 +59,7 @@ public class EventModel {
         this.eventId = eventId;
         this.eventTitle = eventTitle;
         this.eventDescription = eventDescription;
+        this.dateString = dateString;
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         Date date = df.parse(dateString);
         this.date = date;
