@@ -31,6 +31,8 @@ public class TimelineModel implements Serializable {
     private Date dateCreated;
     private String dateCreatedString;
     private ArrayList timelineEvents = new ArrayList<EventModel>();
+    private static final long TICKS_AT_EPOCH = 621355968000000000L;
+    private static final long TICKS_PER_MILLISECOND = 10000;
     
     
    // public static void main(String[]args) {
@@ -56,7 +58,7 @@ public class TimelineModel implements Serializable {
     public TimelineModel(String timelineId, String timelineTitle, long timestamp) {
         this.timelineId = timelineId;
         this.timelineTitle = timelineTitle;
-        Date date = new Date(timestamp);
+        Date date = new Date((timestamp - TICKS_AT_EPOCH)/TICKS_PER_MILLISECOND);
         this.dateCreated = date;
         setDateCreatedString();
     }

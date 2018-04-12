@@ -16,6 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
@@ -29,6 +30,7 @@ public class EventModel {
     private Date date;
     private String dateString;
     private static final String DATE_FORMAT = ("dd-MM-yyyy HH:mm");
+    private ArrayList linkedEvents = new ArrayList<EventModel>();
     
     public EventModel() {
         long timestamp = 560705990;
@@ -41,6 +43,7 @@ public class EventModel {
         this.eventAttachmentTitle = ("Attachment title");
         this.date = date;
         this.dateString = date.toString();
+        this.linkedEvents = new ArrayList();
     }
     
     public EventModel(String eventTitle, String eventDescription, String dateString, String location) throws ParseException {
@@ -53,6 +56,7 @@ public class EventModel {
         this.location = location;
         this.eventAttachmentId = randomStringGen();
         this.eventAttachmentTitle = eventAttachmentTitle;
+        this.linkedEvents = new ArrayList();
     }
     
     public EventModel(String eventId, String eventTitle, String eventDescription, String dateString, String location) throws ParseException {
@@ -64,6 +68,7 @@ public class EventModel {
         Date date = df.parse(dateString);
         this.date = date;
         this.location = location;
+        this.linkedEvents = new ArrayList();
     }
     
     public EventModel(String eventId, String eventTitle, String eventDescription, String dateString, String location, String eventAttachmentId, String eventAttachmentTitle) throws ParseException {
@@ -76,6 +81,7 @@ public class EventModel {
         this.location = location;
         this.eventAttachmentId = eventAttachmentId;
         this.eventAttachmentTitle = eventAttachmentTitle;
+        this.linkedEvents = new ArrayList();
     }
     
     public final String randomStringGen() {
@@ -125,6 +131,10 @@ public class EventModel {
         return this.eventAttachmentTitle;
     }
     
+    public ArrayList<EventModel> getLinkedEvents() {
+        return this.linkedEvents;
+    }
+    
     public void setEventTitle(String eventTitle) {
         this.eventTitle = eventTitle;
     }
@@ -152,5 +162,21 @@ public class EventModel {
     
     public void setEventAttachmentTitle(String eventAttachmentTitle) {
         this.eventAttachmentTitle = eventAttachmentTitle;
+    }
+    
+    public void setLinkedEvents(ArrayList<EventModel> linkedEvents) {
+        this.linkedEvents = linkedEvents;
+    }
+    
+    public void addLinkedEvent(EventModel event) {
+        if(!linkedEvents.contains(event)) {
+            linkedEvents.add(event);
+        }
+    }
+    
+    public void removeLinkedEvent(EventModel event) {
+        if(linkedEvents.contains(event)) {
+            linkedEvents.remove(event);
+        }
     }
 }

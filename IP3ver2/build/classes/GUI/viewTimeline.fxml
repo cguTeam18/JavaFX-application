@@ -20,10 +20,11 @@
          </font></Label>
       <Button id="btnNewEvent" fx:id="newEventBtn" layoutX="498.0" layoutY="14.0" mnemonicParsing="false" onAction="#viewAddEvent" prefHeight="30.0" prefWidth="102.0" text="New Event" />
       <HBox fx:id="HBoxOuter" layoutX="11.0" layoutY="165.0" prefHeight="433.0" prefWidth="578.0" />
-      <Button fx:id="viewBtn" layoutX="102.0" layoutY="61.0" mnemonicParsing="false" onAction="#viewEvent" prefHeight="25.0" prefWidth="83.0" text="View Event" />
-      <Button fx:id="editBtn" layoutX="206.0" layoutY="61.0" mnemonicParsing="false" onAction="#viewEditEvent" prefHeight="25.0" prefWidth="83.0" text="Edit Event" />
-      <Button fx:id="linkBtn" layoutX="307.0" layoutY="61.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Link Events" />
-      <Button fx:id="delBtn" layoutX="415.0" layoutY="61.0" mnemonicParsing="false" onAction="#deleteEventFromTimeline" text="Delete Event" />
-      <Button fx:id="delEventAndLinkBtn" layoutX="213.0" layoutY="98.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="163.0" text="Delete Event And Links" />
+      <Button fx:id="viewBtn" layoutX="14.0" layoutY="61.0" mnemonicParsing="false" onAction="#viewEvent" prefHeight="25.0" prefWidth="102.0" text="View Event" />
+      <Button fx:id="editBtn" layoutX="132.0" layoutY="61.0" mnemonicParsing="false" onAction="#viewEditEvent" prefHeight="25.0" prefWidth="102.0" text="Edit Event" />
+      <Button fx:id="linkBtn" layoutX="249.0" layoutY="61.0" mnemonicParsing="false" onAction="#linkEvent" prefHeight="25.0" prefWidth="102.0" text="Link Events" />
+      <Button fx:id="delBtn" layoutX="484.0" layoutY="61.0" mnemonicParsing="false" onAction="#deleteEventFromTimeline" prefHeight="25.0" prefWidth="102.0" text="Delete Event" />
+      <Button fx:id="delEventAndLinkBtn" layoutX="213.0" layoutY="98.0" mnemonicParsing="false" onAction="#deleteEventAndLinkedEvents" prefHeight="25.0" prefWidth="163.0" text="Delete Event And Links" />
+      <Button fx:id="unlinkEventsBtn" layoutX="365.0" layoutY="61.0" mnemonicParsing="false" onAction="#unlinkEvent" prefHeight="25.0" prefWidth="102.0" text="Unlink Event" />
    </children>
 </AnchorPane>

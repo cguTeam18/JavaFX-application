@@ -70,8 +70,9 @@ public class IP3ver2 extends Application {
                     
                     String finalTitle = title.replace("Title:", "");
                     finalTitle = finalTitle.replaceAll("\\{", "");
-                    finalTitle = finalTitle.replaceAll("\\s+", "");
+                    //finalTitle = finalTitle.replaceAll("\\s+", "");
                     finalTitle = finalTitle.replaceAll("\\[","");
+                    finalTitle = finalTitle.trim();
                     
                     String finalTimestamp = timestamp.replace("CreationTimeStamp:","");
                     finalTimestamp = finalTimestamp.replaceAll("\\s+","");
@@ -113,15 +114,18 @@ public class IP3ver2 extends Application {
                     if(finalIsDeleted.equals("IsDeleted:false")){
                         String finalTitle = title.replace("Title:", "");
                     finalTitle = finalTitle.replaceAll("\\{", "");
-                    finalTitle = finalTitle.replaceAll("\\s+", "");
+                    //finalTitle = finalTitle.replaceAll("\\s+", "");
                     finalTitle = finalTitle.replaceAll("\\[","");
+                    finalTitle = finalTitle.trim();
                     
                     String finalDescription = description.replace("Description: ", "");
+                    finalDescription = finalDescription.trim();
                    
                     String finalDateTime = datetime.replace("EventDateTime:","");
                     finalDateTime = finalDateTime.trim();
                     
                     String finalLocation = location.replace("Location: ", "");
+                    finalLocation = finalLocation.trim();
                     
                     String finalId = id.replace("Id:", "");
                     finalId = finalId.replaceAll("\\s+", "");

@@ -159,7 +159,7 @@ public class EditEventController implements Initializable {
     
     @FXML
     private void setLocation() {
-        this.locationField.setText(this.event.getLocation().trim());
+        this.locationField.setText(this.event.getLocation());
     }
     
     @FXML
@@ -170,10 +170,9 @@ public class EditEventController implements Initializable {
         String descriptionKey = "Description";
         String locationKey = "Location";
         String eventDateTimeKey = "EventDateTime";
-        String eventTitle = getTitle();
-        String eventDate = getDate();
-        String eventTime = getTime();
-        DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        String eventTitle = getTitle().trim();
+        String eventDate = getDate().trim();
+        String eventTime = getTime().trim();
         String eventDescription = getDesc();
         if(!eventTitle.equals("")&&!eventDate.equals("")&&!eventTime.equals("")&&!eventDescription.equals("")) {
             this.event.setEventTitle(eventTitle);

@@ -162,10 +162,9 @@ public class AddNewEventController implements Initializable {
     
     @FXML
     private void addNewEvent(ActionEvent event) throws ParseException, Exception {
-        String eventTitle = getEventTitle();
-        String eventDate = getEventDate();
-        String eventTime = getEventTime();
-        DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        String eventTitle = getEventTitle().trim();
+        String eventDate = getEventDate().trim();
+        String eventTime = getEventTime().trim();
         String eventDescription = getEventDescription();
         if(!eventTitle.equals("")&&!eventDate.equals("")&&!eventTime.equals("")&&!eventDescription.equals("")) {
             this.event.setEventTitle(eventTitle);

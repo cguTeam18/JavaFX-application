@@ -50,7 +50,8 @@ public class ViewTimelineController implements Initializable {
     PutMethods put;
     private TimelineModel selectedTimeline;
     public static EventModel selectedEvent;
-    private ArrayList<EventModel> events = new ArrayList();
+    public static ArrayList<EventModel> events = new ArrayList();
+    public static ArrayList<EventModel> allLinkedEvents = new ArrayList();
     
     @FXML
     AnchorPane viewPane;
@@ -80,6 +81,7 @@ public class ViewTimelineController implements Initializable {
               Scene scene = new Scene(root, 300, 200);
               for(int i=0; i<events.size();i++) {
                 ObservableList<EventModel> eventList = FXCollections.observableArrayList();
+                ObservableList<EventModel> linkedEventsList = FXCollections.observableArrayList();
                 eventList.add(events.get(i));
                 VBox container = new VBox();
                 TableView mainEvent = new TableView();
@@ -88,15 +90,23 @@ public class ViewTimelineController implements Initializable {
                 eventTitleCol.setCellValueFactory(new PropertyValueFactory("eventTitle"));
                 eventTitleCol.setPrefWidth(139);
                 mainEvent.getColumns().addAll(new Object[]{eventTitleCol});
-                mainEvent.setItems(eventList);
-                Label linkedEventsLbl = new Label("Linked Events");
-                ListView linkedEvents = new ListView();
-                linkedEvents.setPrefSize(141, 66);
-               
-                container.getChildren().addAll(mainEvent, linkedEventsLbl, linkedEvents);
-                HBoxOuter.setSpacing(10);
-                HBoxOuter.getChildren().add(container);
-               }
+                TableView linkedEvents = new TableView();
+                for(EventModel linkedEvent : events.get(i).getLinkedEvents()) {
+                    linkedEventsList.add(linkedEvent);
+                }
+                if(!allLinkedEvents.contains(events.get(i))) {
+                    linkedEvents.setPrefSize(141, 120);
+                    TableColumn linkedEventTitleCol = new TableColumn("Linked Events");
+                    linkedEventTitleCol.setCellValueFactory(new PropertyValueFactory("eventTitle"));
+                    linkedEventTitleCol.setPrefWidth(139);
+                    linkedEvents.getColumns().addAll(new Object[]{linkedEventTitleCol});
+                    linkedEvents.setItems(linkedEventsList);
+                    mainEvent.setItems(eventList);
+                    container.getChildren().addAll(mainEvent, linkedEvents);
+                    HBoxOuter.setSpacing(10);
+                    HBoxOuter.getChildren().add(container);
+                }
+              }
              
             /**
              * TimelineModel timeline = selectedTimeline;
@@ -150,14 +160,16 @@ public class ViewTimelineController implements Initializable {
         Node nodeOut = this.HBoxOuter.getChildren().get(i);
         if(nodeOut instanceof VBox) {
             for(Node nodeIn:((VBox)nodeOut).getChildren()) {
-                if(nodeIn instanceof TableView) {
+                if(nodeIn instanceof TableView || nodeIn instanceof ListView) {
                     EventModel object = (EventModel)((TableView) nodeIn).getSelectionModel().getSelectedItems().get(0);
+                    ((TableView) nodeIn).getSelectionModel().clearSelection();
                     if(IP3ver2.events.contains(object)){
                         selectedEvent = object;
                         Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/EditEvent.fxml"));
                         Scene scene = new Scene(viewRoot);
                         IP3ver2.currentStage.setScene(scene);
                     }
+                    ((TableView) nodeIn).getSelectionModel().clearSelection();
                 }
             }
         }
@@ -172,12 +184,15 @@ public class ViewTimelineController implements Initializable {
             for(Node nodeIn:((VBox)nodeOut).getChildren()) {
                 if(nodeIn instanceof TableView) {
                     EventModel object = (EventModel)((TableView) nodeIn).getSelectionModel().getSelectedItems().get(0);
+                    ((TableView) nodeIn).getSelectionModel().clearSelection();
                     if(IP3ver2.events.contains(object)){
                         selectedEvent = object;
+                        ViewEventController.constEvent = object;
                         Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/viewEvent.fxml"));
                         Scene scene = new Scene(viewRoot);
                         IP3ver2.currentStage.setScene(scene);
                     }
+                    ((TableView) nodeIn).getSelectionModel().clearSelection();
                 }
             }
         }
@@ -191,8 +206,9 @@ public class ViewTimelineController implements Initializable {
         Node nodeOut = this.HBoxOuter.getChildren().get(i);
         if(nodeOut instanceof VBox) {
             for(Node nodeIn:((VBox)nodeOut).getChildren()) {
-                if(nodeIn instanceof TableView) {
+                if(nodeIn instanceof TableView || nodeIn instanceof ListView) {
                     EventModel object = (EventModel)((TableView) nodeIn).getSelectionModel().getSelectedItems().get(0);
+                    ((TableView) nodeIn).getSelectionModel().clearSelection();
                     if(IP3ver2.events.contains(object)){
                         String eventId = object.getEventId();
                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this event?");
@@ -215,9 +231,120 @@ public class ViewTimelineController implements Initializable {
         }
     }
     
-    public void deleteEvent(EventModel event) {
+    @FXML
+    private void deleteEventAndLinkedEvents(ActionEvent event) throws Exception {
+        for(int i = 0; i<this.HBoxOuter.getChildren().size(); i++) {
+        Node nodeOut = this.HBoxOuter.getChildren().get(i);
+        if(nodeOut instanceof VBox) {
+            for(Node nodeIn:((VBox)nodeOut).getChildren()) {
+                if(nodeIn instanceof TableView || nodeIn instanceof ListView) {
+                    EventModel object = (EventModel)((TableView) nodeIn).getSelectionModel().getSelectedItems().get(0);
+                    ((TableView) nodeIn).getSelectionModel().clearSelection();
+                    if(IP3ver2.events.contains(object)){
+                        String eventId = object.getEventId();
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this event?");
+                        alert.showAndWait()
+                        .filter(response -> response == ButtonType.OK)
+                        .ifPresent(response -> {
+                            try {
+                                for(EventModel linkedEvent : object.getLinkedEvents()) {
+                                    put.unLinkTimelineEvent(object.getEventId(), linkedEvent.getEventId());
+                                    allLinkedEvents.remove(linkedEvent);
+                                    deleteEventObject(linkedEvent.getEventId());
+                                }
+                                deleteEventObject(eventId);
+                                Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/viewTimeline.fxml"));
+                                Scene scene = new Scene(viewRoot);
+                                IP3ver2.currentStage.setScene(scene);
+                            } catch (Exception ex) {
+                                Logger.getLogger(ViewTimelineController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        });
+                    }
+                }
+            }
+        }
+        }
+    }
+    
+    @FXML
+    private void linkEvent(ActionEvent event) throws Exception {
+        for(int i = 0; i<this.HBoxOuter.getChildren().size(); i++) {
+        Node nodeOut = this.HBoxOuter.getChildren().get(i);
+        if(nodeOut instanceof VBox) {
+            for(Node nodeIn:((VBox)nodeOut).getChildren()) {
+                if(nodeIn instanceof TableView || nodeIn instanceof ListView) {
+                    EventModel object = (EventModel)((TableView) nodeIn).getSelectionModel().getSelectedItems().get(0);
+                    ((TableView) nodeIn).getSelectionModel().clearSelection();
+                    if(IP3ver2.events.contains(object)){
+                        if(!allLinkedEvents.contains(object)) {
+                            try{
+                                selectedEvent = object;
+                                Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/LinkEvents.fxml"));
+                                Scene scene = new Scene(viewRoot);
+                                IP3ver2.currentStage.setScene(scene);
+                                }
+                            catch(Exception ex) {
+                                Logger.getLogger(ViewTimelineController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    @FXML
+    private void unlinkEvent(ActionEvent event) throws Exception {
+        for(int i = 0; i<this.HBoxOuter.getChildren().size(); i++) {
+        Node nodeOut = this.HBoxOuter.getChildren().get(i);
+        if(nodeOut instanceof VBox) {
+            for(Node nodeIn:((VBox)nodeOut).getChildren()) {
+                if(nodeIn instanceof TableView || nodeIn instanceof ListView) {
+                    EventModel object = (EventModel)((TableView) nodeIn).getSelectionModel().getSelectedItems().get(0);
+                    ((TableView) nodeIn).getSelectionModel().clearSelection();
+                    if(IP3ver2.events.contains(object)){
+                        if(allLinkedEvents.contains(object)) {
+                            for(int j = 0; j < events.size(); j++) {
+                                if(events.get(j).getLinkedEvents().contains(object)) {
+                                    System.out.println(events.get(j).getEventId() + " " + object.getEventId());
+                                    put.unLinkTimelineEvent(events.get(j).getEventId(), object.getEventId());
+                                    events.get(j).removeLinkedEvent(object);
+                                    allLinkedEvents.remove(object);
+                                    try{
+                                        Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/viewTimeline.fxml"));
+                                        Scene scene = new Scene(viewRoot);
+                                        IP3ver2.currentStage.setScene(scene);
+                                    }
+                                    catch(Exception ex) {
+                                        Logger.getLogger(ViewTimelineController.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            Alert alert = new Alert(Alert.AlertType.WARNING, "Selected event is not linked to any other event.");
+                            alert.showAndWait()
+                            .filter(response -> response == ButtonType.OK)
+                            .ifPresent(response -> {System.out.println("No event links present warning issued");});
+                            ((TableView) nodeIn).getSelectionModel().clearSelection();
+                        }
+                    }
+                }
+            }
+        }
+        }
+    }
+    
+    
+    public void deleteEvent(EventModel event) throws Exception {
         if(IP3ver2.events.contains(event)){
             IP3ver2.events.remove(event);
+            events.remove(event);
+            allLinkedEvents.remove(event);
+            getTimelineEvents(selectedTimeline.getTimelineId());
+            getTimelineObjectLinkedEvents();
         }
     }
     
@@ -233,7 +360,7 @@ public class ViewTimelineController implements Initializable {
         }
     }
     
-    public void getTimelineObjectLinkedEvents() throws Exception {
+    public final void getTimelineObjectLinkedEvents() throws Exception {
         events.forEach((event) -> {
             try {
                 getLinkedEvents(event, event.getEventId());
@@ -243,7 +370,7 @@ public class ViewTimelineController implements Initializable {
         });
     }
     
-    public void getTimelineEvents(String timelineIdVal) throws Exception {
+    public final void getTimelineEvents(String timelineIdVal) throws Exception {
             EventModel event;
             String[] separatedValue = get.sendGetLinkedEvents(timelineIdVal);
             
@@ -270,7 +397,7 @@ public class ViewTimelineController implements Initializable {
             System.out.println(finalId);
                 try{
                     event = getEvent(finalId);
-                    if(!event.equals("null")) {
+                    if(event != null) {
                         System.out.println(event);
                         addEvent(event);
                     }
@@ -286,10 +413,13 @@ public class ViewTimelineController implements Initializable {
         System.out.println(events.toString());
         }
     
-     public /**ObservableList<EventModel>**/void getLinkedEvents(EventModel event, String eventIdVal) throws Exception {
+     public /**ObservableList<EventModel>**/void getLinkedEvents(EventModel masterEvent, String eventIdVal) throws Exception {
         String[] separatedValue = get.sendGetLinkedTimelineEvents(eventIdVal);
+        EventModel event;
+        ArrayList<EventModel> linkedEventList = new ArrayList();
         
-        for (String newString : separatedValue) {
+        for(int i =0; i<separatedValue.length; i++) {
+            String newString = separatedValue[i];
             String finalNewString = newString.replaceAll("\"","");
             
             try (Scanner readString = new Scanner(finalNewString)) {
@@ -305,9 +435,21 @@ public class ViewTimelineController implements Initializable {
                 finalMasterId = finalMasterId.replaceAll("\\]", "");
                 finalMasterId = finalMasterId.replace("TimelineEvent","");
                 finalMasterId = finalMasterId.replace("Id:","");
-                System.out.println(event.getEventId() + finalMasterId);
-                if(event.getEventId().equals(masterEventId)){
                 
+                String finalLinkedEventId = linkedEventId.replaceAll("\\s+", "");
+                finalLinkedEventId = finalLinkedEventId.replace("LinkedToTimelineEvent","");
+                finalLinkedEventId = finalLinkedEventId.replace("Id:","");
+                System.out.println(finalLinkedEventId);
+                try{
+                    event = getEvent(finalLinkedEventId);
+                    if(event != null) {
+                        System.out.println(event);
+                        masterEvent.addLinkedEvent(event);
+                        addLinkedEvent(event);
+                    }
+                }
+                catch(NullPointerException e){
+                    System.out.println("Linked event does not exist");
                 }
             }
             catch(NoSuchElementException ex){
@@ -328,6 +470,12 @@ public class ViewTimelineController implements Initializable {
     public void addEvent(EventModel event) {
         if(!events.contains(event)) {
             events.add(event);
+        }
+    }
+    
+    public void addLinkedEvent(EventModel event) {
+        if(!allLinkedEvents.contains(event)) {
+            allLinkedEvents.add(event);
         }
     }
     

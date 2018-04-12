@@ -5,13 +5,13 @@
         <group>
             <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/ip3ver2/IP3ver2.java</file>
             <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/Models/TimelineModel.java</file>
-            <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/GUI/viewTimeline.fxml</file>
             <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/Models/AllEvents.java</file>
             <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/Models/AllTimelines.java</file>
             <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/Controllers/EditEventController.java</file>
-            <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/GUI/viewEvent.fxml</file>
             <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/Models/EventModel.java</file>
             <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/GUI/EditEvent.fxml</file>
+            <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/Controllers/LinkEventsController.java</file>
+            <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/Controllers/GetController.java</file>
             <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/RequestMethods/GetMethods.java</file>
             <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/Controllers/ViewEventController.java</file>
             <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/Controllers/AddNewEventController.java</file>
@@ -19,6 +19,7 @@
             <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/Controllers/TableController.java</file>
             <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/Controllers/ViewTimelineController.java</file>
             <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/RequestMethods/PutMethods.java</file>
+            <file>file:/C:/Users/jidev/Documents/Uni/3rd%20Year/IP3/IP3ver2/src/GUI/LinkEvents.fxml</file>
         </group>
     </open-files>
 </project-private>

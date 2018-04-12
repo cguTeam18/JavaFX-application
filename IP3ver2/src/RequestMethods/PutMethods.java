@@ -402,7 +402,7 @@ public class PutMethods {
         System.out.println(response.toString());
     }
 
-    public void unLinkTimelineEvent(String TimelineEventIdKey, String TimelineEventIdVal, String UnlinkedFromTimelineEventIdKey, String UnlinkedFromTimelineEventIdVal) throws Exception {
+    public void unLinkTimelineEvent(String TimelineEventIdVal, String UnlinkedFromTimelineEventIdVal) throws Exception {
 
         URL url = new URL("https://gcu.ideagen-development.com/TimelineEvent/UnlinkEvents");
         HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
@@ -410,11 +410,11 @@ public class PutMethods {
         httpCon.setRequestMethod("PUT");
         httpCon.setRequestProperty("tenantId", tenantId);
         httpCon.setRequestProperty("AuthToken", authToken);
-        httpCon.setRequestProperty(TimelineEventIdKey, TimelineEventIdVal);
-        httpCon.setRequestProperty(UnlinkedFromTimelineEventIdKey, UnlinkedFromTimelineEventIdVal);
+        httpCon.setRequestProperty("TimelineEventId", TimelineEventIdVal);
+        httpCon.setRequestProperty("UnlinkedFromTimelineEventId", UnlinkedFromTimelineEventIdVal);
 
         OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream());
-        out.write("{'TenantId':'Team18', 'AuthToken':'ddd8af7c-3e22-4d31-aefa-3e834071c954', '"+TimelineEventIdKey+"':'"+TimelineEventIdVal+"','"+UnlinkedFromTimelineEventIdKey+"':'"+UnlinkedFromTimelineEventIdVal+"' }");
+        out.write("{'TenantId':'Team18', 'AuthToken':'ddd8af7c-3e22-4d31-aefa-3e834071c954', 'TimelineEventId':'"+TimelineEventIdVal+"','UnlinkedFromTimelineEventId':'"+UnlinkedFromTimelineEventIdVal+"' }");
         out.close();
         BufferedReader in = new BufferedReader(
 		        new InputStreamReader(httpCon.getInputStream()));
