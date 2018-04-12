@@ -32,10 +32,10 @@ import javafx.scene.control.TextArea;
 public class ViewEventController implements Initializable {
     GetMethods get;
     PutMethods put;
-    public static EventModel constEvent;
+    public EventModel constEvent;
     private EventModel event;
     private final ArrayList<EventModel> linkedEvents;
-    private static int bookmark = 0;
+    private static int bookmark = -1;
     
     @FXML
     Label eventTitleLbl;
@@ -58,8 +58,14 @@ public class ViewEventController implements Initializable {
     public ViewEventController() {
         this.get = new GetMethods();
         this.put = new PutMethods();
-        this.event = ViewTimelineController.selectedEvent;
+        this.constEvent = ViewTimelineController.selectedEvent;
         this.linkedEvents = constEvent.getLinkedEvents();
+        if(!linkedEvents.isEmpty() && bookmark != -1) {
+            this.event = linkedEvents.get(bookmark);
+        }
+        else {
+            this.event = ViewTimelineController.selectedEvent;
+        }
     }
     
     @Override
@@ -70,9 +76,13 @@ public class ViewEventController implements Initializable {
         setLocation();
         if(bookmark < linkedEvents.size() && !linkedEvents.isEmpty()) {
             nextEventBtn.setVisible(true);
+            prevEventBtn.setVisible(true);
+        }
+        if(bookmark == -1 && !linkedEvents.isEmpty()) {
+            nextEventBtn.setVisible(true);
             prevEventBtn.setVisible(false);
         }
-        if(bookmark == 0 && !linkedEvents.isEmpty()){
+        if(bookmark == linkedEvents.size()-1 && !linkedEvents.isEmpty()){
             nextEventBtn.setVisible(false);
             prevEventBtn.setVisible(true);
         }
@@ -113,7 +123,7 @@ public class ViewEventController implements Initializable {
     
     @FXML
     private void nextLinkedEvent(ActionEvent event) throws IOException {
-        ViewTimelineController.selectedEvent = linkedEvents.get(bookmark);
+        //ViewTimelineController.selectedEvent = linkedEvents.get(bookmark);
         bookmark++;
         Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/viewEvent.fxml"));
         Scene scene = new Scene(viewRoot);
@@ -122,14 +132,14 @@ public class ViewEventController implements Initializable {
     
     @FXML
     private void prevLinkedEvent(ActionEvent event) throws IOException {
-        if(bookmark == linkedEvents.size()) {
+        //if(bookmark == linkedEvents.size()) {
+          //  bookmark--;
+            //ViewTimelineController.selectedEvent = constEvent;
+        //}
+        //else {
+          //  ViewTimelineController.selectedEvent = linkedEvents.get(bookmark);
             bookmark--;
-            ViewTimelineController.selectedEvent = constEvent;
-        }
-        else {
-            ViewTimelineController.selectedEvent = linkedEvents.get(bookmark);
-            bookmark--;
-        }
+        //}
         Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/viewEvent.fxml"));
         Scene scene = new Scene(viewRoot);
         IP3ver2.currentStage.setScene(scene);

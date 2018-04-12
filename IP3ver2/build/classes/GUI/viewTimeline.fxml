@@ -13,18 +13,26 @@
 
 <AnchorPane fx:id="viewPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ViewTimelineController">
    <children>
-      <Button id="btnBack" fx:id="backToRegButton" layoutY="14.0" mnemonicParsing="false" onAction="#viewTimelineRegister" prefHeight="30.0" prefWidth="102.0" text="Back to Register" />
-      <Label fx:id="timelineTitleLbl" layoutX="234.0" layoutY="15.0" prefHeight="24.0" prefWidth="198.0">
+      <Button id="btnBack" fx:id="backToRegButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#viewTimelineRegister" prefHeight="30.0" prefWidth="102.0" text="Back to Register" />
+      <Label fx:id="timelineTitleLbl" layoutX="132.0" layoutY="17.0" prefHeight="24.0" prefWidth="345.0">
          <font>
             <Font name="Arial Black" size="16.0" />
          </font></Label>
-      <Button id="btnNewEvent" fx:id="newEventBtn" layoutX="498.0" layoutY="14.0" mnemonicParsing="false" onAction="#viewAddEvent" prefHeight="30.0" prefWidth="102.0" text="New Event" />
-      <HBox fx:id="HBoxOuter" layoutX="11.0" layoutY="165.0" prefHeight="433.0" prefWidth="578.0" />
+      <Button id="btnNewEvent" fx:id="newEventBtn" layoutX="484.0" layoutY="14.0" mnemonicParsing="false" onAction="#viewAddEvent" prefHeight="30.0" prefWidth="102.0" text="New Event" />
       <Button fx:id="viewBtn" layoutX="14.0" layoutY="61.0" mnemonicParsing="false" onAction="#viewEvent" prefHeight="25.0" prefWidth="102.0" text="View Event" />
       <Button fx:id="editBtn" layoutX="132.0" layoutY="61.0" mnemonicParsing="false" onAction="#viewEditEvent" prefHeight="25.0" prefWidth="102.0" text="Edit Event" />
       <Button fx:id="linkBtn" layoutX="249.0" layoutY="61.0" mnemonicParsing="false" onAction="#linkEvent" prefHeight="25.0" prefWidth="102.0" text="Link Events" />
       <Button fx:id="delBtn" layoutX="484.0" layoutY="61.0" mnemonicParsing="false" onAction="#deleteEventFromTimeline" prefHeight="25.0" prefWidth="102.0" text="Delete Event" />
       <Button fx:id="delEventAndLinkBtn" layoutX="213.0" layoutY="98.0" mnemonicParsing="false" onAction="#deleteEventAndLinkedEvents" prefHeight="25.0" prefWidth="163.0" text="Delete Event And Links" />
       <Button fx:id="unlinkEventsBtn" layoutX="365.0" layoutY="61.0" mnemonicParsing="false" onAction="#unlinkEvent" prefHeight="25.0" prefWidth="102.0" text="Unlink Event" />
+      <ScrollPane fx:id="hScroll" layoutX="11.0" layoutY="132.0" prefHeight="457.0" prefWidth="577.0">
+        <content>
+          <AnchorPane fx:id="hboxAnchor" minHeight="0.0" minWidth="0.0" prefHeight="527.0" prefWidth="597.0">
+               <children>
+                  <HBox fx:id="HBoxOuter" prefHeight="433.0" prefWidth="578.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
    </children>
 </AnchorPane>

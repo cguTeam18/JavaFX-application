@@ -11,6 +11,7 @@ import RequestMethods.GetMethods;
 import RequestMethods.PutMethods;
 import ip3ver2.IP3ver2;
 import java.awt.Color;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -33,6 +34,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -59,6 +61,11 @@ public class ViewTimelineController implements Initializable {
     @FXML
     Label timelineTitleLbl;
     
+    @FXML
+    ScrollPane hScroll;
+    
+    @FXML
+    AnchorPane hboxAnchor;
     
     @FXML
     HBox HBoxOuter;
@@ -79,6 +86,7 @@ public class ViewTimelineController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
               Group root = new Group();
               Scene scene = new Scene(root, 300, 200);
+              hScroll.setFitToHeight(true);
               for(int i=0; i<events.size();i++) {
                 ObservableList<EventModel> eventList = FXCollections.observableArrayList();
                 ObservableList<EventModel> linkedEventsList = FXCollections.observableArrayList();
@@ -136,6 +144,8 @@ public class ViewTimelineController implements Initializable {
         //} catch (Exception ex) {
             //Logger.getLogger(ViewTimelineController.class.getName()).log(Level.SEVERE, null, ex);
         //}
+        HBoxOuter.setPrefWidth(200*events.size());
+        hboxAnchor.setPrefWidth(200*events.size());
         timelineTitleLbl.setText(selectedTimeline.getTimelineTitle() + " Events");
     }
     
@@ -187,7 +197,6 @@ public class ViewTimelineController implements Initializable {
                     ((TableView) nodeIn).getSelectionModel().clearSelection();
                     if(IP3ver2.events.contains(object)){
                         selectedEvent = object;
-                        ViewEventController.constEvent = object;
                         Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/viewEvent.fxml"));
                         Scene scene = new Scene(viewRoot);
                         IP3ver2.currentStage.setScene(scene);
@@ -317,7 +326,7 @@ public class ViewTimelineController implements Initializable {
                                         Scene scene = new Scene(viewRoot);
                                         IP3ver2.currentStage.setScene(scene);
                                     }
-                                    catch(Exception ex) {
+                                    catch(IOException ex) {
                                         Logger.getLogger(ViewTimelineController.class.getName()).log(Level.SEVERE, null, ex);
                                     }
                                 }

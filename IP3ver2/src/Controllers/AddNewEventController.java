@@ -28,6 +28,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -74,6 +75,12 @@ public class AddNewEventController implements Initializable {
      @Override
     public void initialize(URL url, ResourceBundle rb) {
         lblNewTime.setText(selectedTimeline.getTimelineTitle());
+        dateField.setDayCellFactory(picker -> new DateCell() {
+        public void updateItem(LocalDate date, boolean empty) {
+            super.updateItem(date, empty);
+            setDisable(empty || date.compareTo(placeHolder) > 0);
+                }
+        });
         dateField.setValue(this.placeHolder);
     }
     
@@ -118,19 +125,9 @@ public class AddNewEventController implements Initializable {
         Date eventDate = null;
         String eventDateStr = null;
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-        if(!dateField.getValue().equals(this.placeHolder)) {
-            LocalDate selectedDate = dateField.getValue();
-            eventDate = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-            eventDateStr = df.format(eventDate);
-        }
-        else {
-            eventDateStr = "";
-            Alert alert = new Alert(Alert.AlertType.WARNING, "No Date has been entered!");
-            alert.showAndWait()
-            .filter(response -> response == ButtonType.OK)
-            .ifPresent(response -> System.out.println("Null time warning issued: "));
-            System.out.println("Time has not been entered");
-        }
+        LocalDate selectedDate = dateField.getValue();
+        eventDate = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        eventDateStr = df.format(eventDate);
         return eventDateStr;
     }
     

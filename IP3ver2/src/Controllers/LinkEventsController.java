@@ -107,8 +107,7 @@ public class LinkEventsController implements Initializable {
                 System.out.println("No linked events selected warning issued.");
             });       
         }
-        else {
-            
+        else { 
             selectedEventsList.forEach(obj -> eventTitles.add(obj.getEventTitle()));
         
             StringBuilder sb = new StringBuilder();
@@ -127,18 +126,17 @@ public class LinkEventsController implements Initializable {
                     } catch (Exception ex) {
                         Logger.getLogger(LinkEventsController.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                
-                    try {
-                        Parent viewRoot;
-                        viewRoot = FXMLLoader.load(getClass().getResource("/GUI/viewTimeline.fxml"));
-                        Scene scene = new Scene(viewRoot);
-                        IP3ver2.currentStage.setScene(scene);
-                        this.masterEvent = null;
-                        ViewTimelineController.selectedEvent = null;
-                    } catch (IOException ex) {
-                        Logger.getLogger(LinkEventsController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
                 });
+                try {
+                    Parent viewRoot;
+                    viewRoot = FXMLLoader.load(getClass().getResource("/GUI/viewTimeline.fxml"));
+                    Scene scene = new Scene(viewRoot);
+                    IP3ver2.currentStage.setScene(scene);
+                    this.masterEvent = null;
+                    ViewTimelineController.selectedEvent = null;
+                } catch (IOException ex) {
+                    Logger.getLogger(LinkEventsController.class.getName()).log(Level.SEVERE, null, ex);
+                }
             });
         }
     }
