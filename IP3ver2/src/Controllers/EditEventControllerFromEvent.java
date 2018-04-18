@@ -5,11 +5,11 @@
  */
 package Controllers;
 
+import ip3ver2.IP3ver2;
 import Models.EventModel;
 import Models.TimelineModel;
 import RequestMethods.GetMethods;
 import RequestMethods.PutMethods;
-import ip3ver2.IP3ver2;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -19,7 +19,10 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,15 +30,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import org.w3c.dom.Document;
@@ -43,16 +42,16 @@ import org.w3c.dom.Element;
 import org.w3c.dom.html.HTMLInputElement;
 
 /**
+ * FXML Controller class
  *
  * @author jidev
  */
-public class AddNewEventController implements Initializable {
-    
+public class EditEventControllerFromEvent implements Initializable {
+
     private EventModel event;
     private GetMethods get = new GetMethods();
     private PutMethods put = new PutMethods();
     private TimelineModel selectedTimeline;
-    private LocalDate placeHolder = LocalDate.now();
     
     @FXML
     TextField titleField;
@@ -73,65 +72,57 @@ public class AddNewEventController implements Initializable {
     Label lblNewTime;
     private WebEngine webEngine;
     
-    public AddNewEventController() {
-        EventModel event = new EventModel();
+    public EditEventControllerFromEvent() throws ParseException {
+        EventModel event = ViewEventController.selectedEvent;
         this.get = new GetMethods();
         this.put = new PutMethods();
         this.event = event;
         this.selectedTimeline = TableController.selectedTimeline;
+        
     }
-    
-     @Override
+    /**
+     * Initializes the controller class.
+     */
+    @Override
     public void initialize(URL url, ResourceBundle rb) {
-        lblNewTime.setText(selectedTimeline.getTimelineTitle());
-        dateField.setDayCellFactory(picker -> new DateCell() {
-        public void updateItem(LocalDate date, boolean empty) {
-            super.updateItem(date, empty);
-            setDisable(empty || date.compareTo(placeHolder) > 0);
-                }
-        });
-        dateField.setValue(this.placeHolder);
         this.webEngine = locationField.getEngine();
         final URL urlGoogleMaps = getClass().getResource("/HTML/GoogleMapsNew.html");
         webEngine.load(urlGoogleMaps.toExternalForm());
         webEngine.setUserStyleSheetLocation(getClass().getResource("/HTML/mapsStyleSheet.css").toExternalForm());
-    }
+        String enterLocation = "document.getElementById('address').value='" + event.getLocation()+"';";
+        webEngine.getLoadWorker().stateProperty().addListener((ov, oldState, newState) -> {
+        if ( newState == Worker.State.SUCCEEDED ) {
+                webEngine.executeScript(enterLocation);
+                findLocation();
+                }
+        });
+        lblNewTime.setText(selectedTimeline.getTimelineTitle());
+        setTitle();
+        setDesc();
+        try {
+            setDate();
+        } catch (ParseException ex) {
+            Logger.getLogger(EditEventControllerFromEvent.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        setTime();
+    }    
     
     @FXML
-    private String getEventTitle() {
-        String eventTitleStr = null;
-        if(!titleField.getText().equals("")) {
-            eventTitleStr = titleField.getText();
-            return eventTitleStr;
-        }
-        else {
-            eventTitleStr = "";
-            Alert alert = new Alert(Alert.AlertType.WARNING, "No title has been entered!");
-            alert.showAndWait()
-            .filter(response -> response == ButtonType.OK)
-            .ifPresent(response -> System.out.println("Null title box warning issued: "));
-            System.out.println("Title has not been entered");
-        }
+    private String getTitle() {
+        String eventTitleStr = titleField.getText();
         return eventTitleStr;
     }
     
     @FXML
-    private String getEventDescription() {
-        String eventDescriptionStr = null;
-        if(!descField.getText().equals("")) {
-            eventDescriptionStr = descField.getText();
-            return eventDescriptionStr;
-        }
-        else {
-            eventDescriptionStr = "";
-        }
-        return eventDescriptionStr;
+    private String getDesc() {
+        String eventDescStr = descField.getText();
+        return eventDescStr;
     }
     
     @FXML
-    private String getEventDate() {
-        Date eventDate = null;
-        String eventDateStr = null;
+    private String getDate() {
+        Date eventDate;
+        String eventDateStr;
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         LocalDate selectedDate = dateField.getValue();
         eventDate = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -140,24 +131,18 @@ public class AddNewEventController implements Initializable {
     }
     
     @FXML
-    private String getEventTime() {
-        String eventTimeStr = null;
-        if(!timeField.getText().equals("")) {
-            eventTimeStr = timeField.getText();
-            Pattern p = Pattern.compile("^\\d{1,2}:\\d{1,2}$");
-            if(!p.matcher(eventTimeStr).matches()) {
-                eventTimeStr = "";
-                Alert alert = new Alert(Alert.AlertType.WARNING, "Not a valid timestamp, please enter the time as HH:mm.");
-                alert.showAndWait()
-                .filter(response -> response == ButtonType.OK)
-                .ifPresent(response -> System.out.println("Invalid time warning issued: "));
-                System.out.println("Time has not been entered");
-            }
-        }
-        else {
+    private String getTime() {
+        String eventTimeStr = timeField.getText();
+        Pattern p = Pattern.compile("^\\d{1,2}:\\d{1,2}$");
+        if(!p.matcher(eventTimeStr).matches()) {
             eventTimeStr = "";
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Not a valid timestamp, please enter the time as HH:mm.");
+            alert.showAndWait()
+            .filter(response -> response == ButtonType.OK)
+            .ifPresent(response -> System.out.println("Invalid time warning issued: "));
+            System.out.println("Time has not been entered");
         }
-        return eventTimeStr;
+       return eventTimeStr;
     }
     
     public String getAddress() {
@@ -175,18 +160,52 @@ public class AddNewEventController implements Initializable {
         return location;
     }
     
+    
+    
+    @FXML
+    private void setTitle() {
+        this.titleField.setText(this.event.getEventTitle());
+    }
+    
+    @FXML
+    private void setDesc() {
+        this.descField.setText(this.event.getEventDescription().trim());
+    }
+    
+    @FXML
+    private void setDate() throws ParseException {
+        String eventDateStr = this.event.getDateString();
+        String eventDateOnly = eventDateStr.substring(0, 10);
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = df.parse(eventDateOnly);
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        this.dateField.setValue(localDate);
+    }
+    
+    @FXML
+    private void setTime() {
+        String eventDateStr = this.event.getDateString();
+        String eventTimeOnly = eventDateStr.substring(11);
+        this.timeField.setText(eventTimeOnly);
+    }
+    
     @FXML
     public void findLocation() {
         this.webEngine.executeScript("codeAddress()");
     }
     
-    
     @FXML
-    private void addNewEvent(ActionEvent event) throws ParseException, Exception {
-        String eventTitle = getEventTitle().trim();
-        String eventDate = getEventDate().trim();
-        String eventTime = getEventTime().trim();
-        String eventDescription = getEventDescription();
+    private void editEvent() throws ParseException, Exception {
+    
+        String eventIdKey = "TimelineEventId";
+        String titleKey = "Title";
+        String descriptionKey = "Description";
+        String locationKey = "Location";
+        String eventDateTimeKey = "EventDateTime";
+        String eventTitle = getTitle().trim();
+        String eventDate = getDate().trim();
+        String eventTime = getTime().trim();
+        String eventDescription = getDesc();
         String location = getAddress();
         if(eventTitle.equals("")||eventDate.equals("")||eventTime.equals("")||eventDescription.equals("")) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "One or more fields have been left blank."
@@ -205,15 +224,19 @@ public class AddNewEventController implements Initializable {
             if(!location.equals("")){
                 this.event.setEventlocation(location);
             }
-            IP3ver2.events.add(this.event);
-            put.createEvent(this.event.getEventId(), this.event.getEventTitle(), this.event.getEventDescription(), this.event.getDateString(), this.event.getLocation());
-            System.out.println(selectedTimeline.getTimelineId() + this.event.getEventId());
-            put.linkEvent(selectedTimeline.getTimelineId(), this.event.getEventId());
-            Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/viewTimeline.fxml"));
-            Scene scene = new Scene(viewRoot);
-            IP3ver2.currentStage.setScene(scene);
+            
+            if(IP3ver2.events.contains(this.event)) {
+                IP3ver2.events.remove(this.event);
+                IP3ver2.events.add(this.event);
+                put.editEventTitle(eventIdKey, this.event.getEventId(), titleKey, this.event.getEventTitle());
+                put.editDescription(eventIdKey, this.event.getEventId(), descriptionKey, this.event.getEventDescription());
+                put.editEventDateTime(eventIdKey, this.event.getEventId(), eventDateTimeKey, this.event.getDateString());
+                put.editLocation(eventIdKey, this.event.getEventId(), locationKey, this.event.getLocation());
+                Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/viewTimeline.fxml"));
+                Scene scene = new Scene(viewRoot);
+                IP3ver2.currentStage.setScene(scene);
+            }
         }
-        
     }
     
     @FXML 
@@ -223,4 +246,10 @@ public class AddNewEventController implements Initializable {
         IP3ver2.currentStage.setScene(scene);
     }
     
+    @FXML
+    private void backToEvent(ActionEvent event) throws IOException {
+        Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/viewEvent.fxml"));
+        Scene scene = new Scene(viewRoot);
+        IP3ver2.currentStage.setScene(scene);
+    }
 }

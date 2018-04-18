@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,6 +25,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.html.HTMLInputElement;
 
 /**
  *
@@ -32,6 +38,7 @@ import javafx.scene.control.TextArea;
 public class ViewEventController implements Initializable {
     GetMethods get;
     PutMethods put;
+    public static EventModel selectedEvent;
     public EventModel constEvent;
     private EventModel event;
     private final ArrayList<EventModel> linkedEvents;
@@ -47,13 +54,14 @@ public class ViewEventController implements Initializable {
     TextArea descArea;
     
     @FXML
-    TextArea locationArea;
+    WebView locationArea;
     
     @FXML
     Button nextEventBtn;
     
     @FXML
     Button prevEventBtn;
+    private WebEngine webEngine;
     
     public ViewEventController() {
         this.get = new GetMethods();
@@ -70,10 +78,21 @@ public class ViewEventController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        this.webEngine = locationArea.getEngine();
+        final URL urlGoogleMaps = getClass().getResource("/HTML/GoogleMapsNew.html");
+        webEngine.load(urlGoogleMaps.toExternalForm());
+        webEngine.setUserStyleSheetLocation(getClass().getResource("/HTML/mapsStyleSheet.css").toExternalForm());
+        String enterLocation = "document.getElementById('address').value='" + event.getLocation()+"';";
+        webEngine.getLoadWorker().stateProperty().addListener((ov, oldState, newState) -> {
+        if ( newState == Worker.State.SUCCEEDED ) {
+                webEngine.executeScript(enterLocation);
+                findLocation();
+                }
+        });
         setTitle();
         setDesc();
         setDateTime();
-        setLocation();
+        //setLocation();
         if(bookmark < linkedEvents.size() && !linkedEvents.isEmpty()) {
             nextEventBtn.setVisible(true);
             prevEventBtn.setVisible(true);
@@ -108,8 +127,16 @@ public class ViewEventController implements Initializable {
     }
     
     @FXML
-    private void setLocation() {
-        locationArea.setText(event.getLocation());
+    public void findLocation() {
+        this.webEngine.executeScript("codeAddress()");
+    }
+    
+    @FXML
+    private void editEvent(ActionEvent event) throws IOException {
+        selectedEvent = this.event;
+        Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/EditEventFromEvent.fxml"));
+        Scene scene = new Scene(viewRoot);
+        IP3ver2.currentStage.setScene(scene);
     }
     
     @FXML 

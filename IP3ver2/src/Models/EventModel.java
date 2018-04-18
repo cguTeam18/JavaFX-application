@@ -38,11 +38,23 @@ public class EventModel {
         this.eventId = randomStringGen();
         this.eventTitle = ("Untitled");
         this.eventDescription = ("Description");
-        this.location = ("location");
+        this.location = ("Unknown");
         this.eventAttachmentId = randomStringGen();
         this.eventAttachmentTitle = ("Attachment title");
         this.date = date;
         this.dateString = date.toString();
+        this.linkedEvents = new ArrayList();
+    }
+    public EventModel(String eventTitle, String eventDescription, String dateString) throws ParseException {
+        this.eventId = randomStringGen();
+        this.eventTitle = eventTitle;
+        this.eventDescription = eventDescription;
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        Date date = df.parse(dateString);
+        this.date = date;
+        this.location = "Unknown";
+        this.eventAttachmentId = randomStringGen();
+        this.eventAttachmentTitle = eventAttachmentTitle;
         this.linkedEvents = new ArrayList();
     }
     
@@ -55,7 +67,6 @@ public class EventModel {
         this.date = date;
         this.location = location;
         this.eventAttachmentId = randomStringGen();
-        this.eventAttachmentTitle = eventAttachmentTitle;
         this.linkedEvents = new ArrayList();
     }
     

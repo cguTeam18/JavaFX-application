@@ -35,8 +35,10 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -93,21 +95,40 @@ public class ViewTimelineController implements Initializable {
                 eventList.add(events.get(i));
                 VBox container = new VBox();
                 TableView mainEvent = new TableView();
-                mainEvent.setPrefSize(141, 66);
+                mainEvent.setPrefSize(300, 66);
                 TableColumn eventTitleCol = new TableColumn("Event Title");
+                TableColumn eventLocationCol = new TableColumn("Location");
                 eventTitleCol.setCellValueFactory(new PropertyValueFactory("eventTitle"));
-                eventTitleCol.setPrefWidth(139);
-                mainEvent.getColumns().addAll(new Object[]{eventTitleCol});
+                eventTitleCol.setPrefWidth(95);
+                eventLocationCol.setCellValueFactory(new PropertyValueFactory("location"));
+                eventLocationCol.setPrefWidth(95);
+                mainEvent.getColumns().addAll(new Object[]{eventTitleCol, eventLocationCol});
                 TableView linkedEvents = new TableView();
+                mainEvent.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
+                    if(newItem != null) {
+                        deselectTableViews(mainEvent);
+                    }
+                });
+                linkedEvents.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
+                    if(newItem != null) {
+                        deselectTableViews(linkedEvents);
+                    }
+                });
+                linkedEvents.getSelectionModel().setSelectionMode(
+                    SelectionMode.MULTIPLE
+                );
                 for(EventModel linkedEvent : events.get(i).getLinkedEvents()) {
                     linkedEventsList.add(linkedEvent);
                 }
                 if(!allLinkedEvents.contains(events.get(i))) {
-                    linkedEvents.setPrefSize(141, 120);
+                    linkedEvents.setPrefSize(300, 120);
                     TableColumn linkedEventTitleCol = new TableColumn("Linked Events");
+                    TableColumn linkedEventLocationCol = new TableColumn("Location");
                     linkedEventTitleCol.setCellValueFactory(new PropertyValueFactory("eventTitle"));
-                    linkedEventTitleCol.setPrefWidth(139);
-                    linkedEvents.getColumns().addAll(new Object[]{linkedEventTitleCol});
+                    linkedEventTitleCol.setPrefWidth(95);
+                    linkedEventLocationCol.setCellValueFactory(new PropertyValueFactory("location"));
+                    linkedEventLocationCol.setPrefWidth(95);
+                    linkedEvents.getColumns().addAll(new Object[]{linkedEventTitleCol, linkedEventLocationCol});
                     linkedEvents.setItems(linkedEventsList);
                     mainEvent.setItems(eventList);
                     container.getChildren().addAll(mainEvent, linkedEvents);
@@ -149,8 +170,23 @@ public class ViewTimelineController implements Initializable {
         timelineTitleLbl.setText(selectedTimeline.getTimelineTitle() + " Events");
     }
     
+    public void deselectTableViews(TableView tableViewToKeep) {
+        for(int i = 0; i<this.HBoxOuter.getChildren().size(); i++) {
+        Node nodeOut = this.HBoxOuter.getChildren().get(i);
+        if(nodeOut instanceof VBox) {
+            ((VBox)nodeOut).getChildren().stream().filter((nodeIn) -> (nodeIn instanceof TableView && nodeIn != tableViewToKeep)).forEachOrdered((nodeIn) -> {
+                ((TableView)nodeIn).getSelectionModel().clearSelection();
+            });
+            }
+        }
+            
+    }
+    
     @FXML
     private void viewTimelineRegister(ActionEvent event) throws Exception {
+        events.clear();
+        allLinkedEvents.clear();
+        selectedEvent = null;
         Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/TableView.fxml"));
         Scene scene = new Scene(viewRoot);
         IP3ver2.currentStage.setScene(scene);
@@ -175,7 +211,7 @@ public class ViewTimelineController implements Initializable {
                     ((TableView) nodeIn).getSelectionModel().clearSelection();
                     if(IP3ver2.events.contains(object)){
                         selectedEvent = object;
-                        Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/EditEvent.fxml"));
+                        Parent viewRoot = FXMLLoader.load(getClass().getResource("/GUI/EditEventFromTimeline.fxml"));
                         Scene scene = new Scene(viewRoot);
                         IP3ver2.currentStage.setScene(scene);
                     }
@@ -333,7 +369,7 @@ public class ViewTimelineController implements Initializable {
                             }
                         }
                         else {
-                            Alert alert = new Alert(Alert.AlertType.WARNING, "Selected event is not linked to any other event.");
+                            Alert alert = new Alert(Alert.AlertType.WARNING, "Selected event is a master event. Please select an event linked to a master event.");
                             alert.showAndWait()
                             .filter(response -> response == ButtonType.OK)
                             .ifPresent(response -> {System.out.println("No event links present warning issued");});

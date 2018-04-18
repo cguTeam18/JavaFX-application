@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+<body onload="initialize()">
+    <script>  
+  var geocoder;
+  var map;
+  function initialize() {
+    geocoder = new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(55.8662, -4.2508);
+    var mapOptions = {
+      zoom: 10,
+      center: latlng
+    };
+    map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    document.getElementById('address').value = "Glasgow";
+    document.getElementById('confirmedAddress').style.visibility = "hidden";
+  }
+
+ function codeAddress() {
+    var address = document.getElementById('address').value;
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status === 'OK') {
+        map.setCenter(results[0].geometry.location);
+        map.setZoom(13);
+        var marker = new google.maps.Marker({
+            map: map,
+            position: results[0].geometry.location
+        });
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+        document.getElementById('address').value = "Could not find location...";
+      }
+      document.getElementById('confirmedAddress').value = status;
+    });
+  };
+  </script>
+  
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9R_OYuFVZgivaifh-4P3YWEcAvIQQ5AY&callback=myMap"></script>
+
+ <div id="map" style="width: 230px; height: 170px;"></div>
+  <div>
+    <input id="confirmedAddress" type ="text" value="">
+    <input id="address" type="text" value="Glasgow">
+  </div>
+</body>
+</html>

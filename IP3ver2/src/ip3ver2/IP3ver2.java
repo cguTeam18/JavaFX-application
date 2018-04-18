@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,19 +90,19 @@ public class IP3ver2 extends Application {
     public void createEventObjects() throws Exception {
         
         String[] separatedValue = get.sendGetTimelineEvents();
-        for(int i =0; i<separatedValue.length-1; i++) {
+        for(int i =0; i<separatedValue.length; i++) {
             
                     String newString = separatedValue[i];//.substring(separatedValue[i].lastIndexOf(":")+1);
                     String finalNewString = newString.replaceAll("\"","");
                     
-                    Scanner readString = new Scanner(finalNewString);
-                    readString.useDelimiter(",");
                     String title;
                     String datetime;
                     String description;
                     String location;
                     String id;
                     String isDeleted;
+                try (Scanner readString = new Scanner(finalNewString)) {
+                    readString.useDelimiter(",");
                     title = readString.next();
                     datetime = readString.next();
                     description = readString.next();
@@ -109,7 +110,6 @@ public class IP3ver2 extends Application {
                     location = readString.next();
                     id = readString.next();
                     readString.next();
-                    readString.close();
                     String finalIsDeleted = isDeleted.replaceAll("\\s+", "");
                     if(finalIsDeleted.equals("IsDeleted:false")){
                         String finalTitle = title.replace("Title:", "");
@@ -129,10 +129,14 @@ public class IP3ver2 extends Application {
                     
                     String finalId = id.replace("Id:", "");
                     finalId = finalId.replaceAll("\\s+", "");
-                    System.out.println(finalId + finalTitle + finalDateTime + finalDescription+finalLocation);
+                    System.out.println("ID: " +finalId +" Title: "+ finalTitle +" Date/Time: " + finalDateTime +" Description: " + finalDescription + " Location: "+finalLocation);
                     EventModel event = new EventModel(finalId, finalTitle, finalDescription, finalDateTime, finalLocation);
                     events.add(event);  
                     }
+                }
+                catch(NoSuchElementException e) {
+                    
+                }
                         
         }
     }

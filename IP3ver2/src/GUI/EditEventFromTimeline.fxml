@@ -14,35 +14,35 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="650.0" prefWidth="600.0" style="-fx-background-color: #005C6E;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AddNewEventController">
+<AnchorPane prefHeight="650.0" prefWidth="600.0" style="-fx-background-color: #005C6E;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.EditEventControllerFromTimeline">
     <children>
         <Button id="btnBack" fx:id="btnBack" layoutX="35.0" layoutY="24.0" mnemonicParsing="false" onAction="#backToTimeline" style="-fx-background-color: #6C8B90;" text="Back To Events" textFill="WHITE" AnchorPane.leftAnchor="25.0">
          <effect>
             <DropShadow />
          </effect></Button>
-        <Label id="lblNewTime" fx:id="lblNewTime" layoutX="280.0" layoutY="62.0" text="Add Event" textFill="WHITE" AnchorPane.leftAnchor="291.0" AnchorPane.topAnchor="62.0">
+        <Label id="lblNewTime" fx:id="lblNewTime" layoutX="291.0" layoutY="60.0" text="Edit Event" textFill="WHITE" AnchorPane.leftAnchor="291.0" AnchorPane.topAnchor="60.0">
             <font>
                 <Font name="System Bold" size="14.0" />
             </font></Label>
-        <Button id="lblSave" fx:id="btnSaveEvent" layoutX="538.0" layoutY="24.0" mnemonicParsing="false" onAction="#addNewEvent" style="-fx-background-color: #6C8B90;" text="Save Event" textFill="WHITE" AnchorPane.rightAnchor="25.0">
+        <Button id="lblSave" fx:id="btnSaveEvent" layoutX="538.0" layoutY="24.0" mnemonicParsing="false" onAction="#editEvent" style="-fx-background-color: #6C8B90;" text="Save Event" textFill="WHITE" AnchorPane.rightAnchor="25.0">
          <effect>
             <DropShadow />
          </effect></Button>
         <Label id="lblEvent" layoutX="169.0" layoutY="111.0" text="Event Title" textFill="WHITE" AnchorPane.leftAnchor="125.0" />
         <Label id="lblDate" layoutX="169.0" layoutY="160.0" text="Date &amp; Time" textFill="WHITE" AnchorPane.leftAnchor="125.0" />
         <DatePicker id="dateField" fx:id="dateField" layoutX="253.0" layoutY="156.0" AnchorPane.leftAnchor="225.0" />
-        <TextField fx:id="titleField" layoutX="253.0" layoutY="107.0" prefHeight="25.0" prefWidth="266.0" AnchorPane.leftAnchor="225.0" AnchorPane.topAnchor="107.0" />
-        <TextField fx:id="timeField" layoutX="418.0" layoutY="156.0" prefHeight="25.0" prefWidth="73.0" />
+        <TextField fx:id="titleField" layoutX="253.0" layoutY="107.0" prefHeight="25.0" prefWidth="266.0" AnchorPane.leftAnchor="225.0" AnchorPane.rightAnchor="107.0" />
+        <TextField fx:id="timeField" layoutX="446.0" layoutY="156.0" prefHeight="25.0" prefWidth="73.0" AnchorPane.leftAnchor="420.0" AnchorPane.rightAnchor="107.0" />
         <Label id="lblDesc" layoutX="169.0" layoutY="202.0" text="Description" textFill="WHITE" AnchorPane.leftAnchor="125.0" />
         <TextArea fx:id="descField" layoutX="253.0" layoutY="202.0" prefHeight="77.0" prefWidth="266.0" AnchorPane.leftAnchor="225.0" />
-        <Label layoutX="127.0" layoutY="300.0" text="Location" textFill="WHITE" />
-        <Label layoutX="125.0" layoutY="615.0" text="Attachment" textFill="WHITE" AnchorPane.leftAnchor="125.0" />
-        <Button id="btnBack" fx:id="btnBack1" layoutX="296.0" layoutY="611.0" mnemonicParsing="false" text="Browse Files" />
-      <Button layoutX="226.0" layoutY="557.0" mnemonicParsing="false" onAction="#findLocation" prefHeight="25.0" prefWidth="266.0" style="-fx-background-color: #6C8B90;" text="Find Location" textFill="WHITE">
+        <Label layoutX="127.0" layoutY="300.0" text="Location" textFill="WHITE" AnchorPane.leftAnchor="125.0" />
+        <Label layoutX="120.0" layoutY="615.0" text="Attachment" textFill="WHITE" />
+        <Button id="btnBack" fx:id="btnBack1" layoutX="294.0" layoutY="611.0" mnemonicParsing="false" text="Browse Files" />
+      <WebView fx:id="locationField" layoutX="224.0" layoutY="309.0" prefHeight="248.0" prefWidth="266.0" />
+      <Button layoutX="224.0" layoutY="567.0" mnemonicParsing="false" onAction="#findLocation" prefHeight="25.0" prefWidth="266.0" style="-fx-background-color: #6C8B90;" text="Update Location" textFill="WHITE">
          <effect>
             <DropShadow />
          </effect>
       </Button>
-      <WebView fx:id="locationField" layoutX="225.0" layoutY="300.0" prefHeight="235.0" prefWidth="266.0" />
     </children>
 </AnchorPane>

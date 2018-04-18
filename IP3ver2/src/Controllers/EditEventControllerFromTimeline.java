@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,13 +35,18 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.html.HTMLInputElement;
 
 /**
  * FXML Controller class
  *
  * @author jidev
  */
-public class EditEventController implements Initializable {
+public class EditEventControllerFromTimeline implements Initializable {
 
     private EventModel event;
     private GetMethods get = new GetMethods();
@@ -60,12 +66,14 @@ public class EditEventController implements Initializable {
     TextField timeField;
     
     @FXML
-    TextArea locationField;
+    WebView locationField;
     
     @FXML
     Label lblNewTime;
     
-    public EditEventController() throws ParseException {
+    private WebEngine webEngine;
+    
+    public EditEventControllerFromTimeline() throws ParseException {
         EventModel event = ViewTimelineController.selectedEvent;
         this.get = new GetMethods();
         this.put = new PutMethods();
@@ -78,16 +86,26 @@ public class EditEventController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        this.webEngine = locationField.getEngine();
+        final URL urlGoogleMaps = getClass().getResource("/HTML/GoogleMapsNew.html");
+        webEngine.load(urlGoogleMaps.toExternalForm());
+        webEngine.setUserStyleSheetLocation(getClass().getResource("/HTML/mapsStyleSheet.css").toExternalForm());
+        String enterLocation = "document.getElementById('address').value='" + event.getLocation()+"';";
+        webEngine.getLoadWorker().stateProperty().addListener((ov, oldState, newState) -> {
+        if ( newState == Worker.State.SUCCEEDED ) {
+                webEngine.executeScript(enterLocation);
+                findLocation();
+                }
+        });
         lblNewTime.setText(selectedTimeline.getTimelineTitle());
         setTitle();
         setDesc();
         try {
             setDate();
         } catch (ParseException ex) {
-            Logger.getLogger(EditEventController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EditEventControllerFromTimeline.class.getName()).log(Level.SEVERE, null, ex);
         }
         setTime();
-        setLocation();
     }    
     
     @FXML
@@ -128,6 +146,21 @@ public class EditEventController implements Initializable {
        return eventTimeStr;
     }
     
+    public String getAddress() {
+        String location = "";
+        Document doc = webEngine.getDocument();
+        Element check = doc.getElementById("confirmedAddress");
+        Element locationEl = doc.getElementById("address");
+        HTMLInputElement checkValue = (HTMLInputElement) check;
+        HTMLInputElement locationValue = (HTMLInputElement) locationEl;
+        String checkBool = checkValue.getValue();
+        if(checkBool.equals("OK")) {
+            location = locationValue.getValue();
+        }
+        System.out.println(location + " " + checkBool);
+        return location;
+    }
+    
     
     
     @FXML
@@ -158,8 +191,8 @@ public class EditEventController implements Initializable {
     }
     
     @FXML
-    private void setLocation() {
-        this.locationField.setText(this.event.getLocation());
+    public void findLocation() {
+        this.webEngine.executeScript("codeAddress()");
     }
     
     @FXML
@@ -174,12 +207,24 @@ public class EditEventController implements Initializable {
         String eventDate = getDate().trim();
         String eventTime = getTime().trim();
         String eventDescription = getDesc();
-        if(!eventTitle.equals("")&&!eventDate.equals("")&&!eventTime.equals("")&&!eventDescription.equals("")) {
+        String location = getAddress();
+        if(eventTitle.equals("")||eventDate.equals("")||eventTime.equals("")||eventDescription.equals("")) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "One or more fields have been left blank."
+                +"Please fill any remaining fields and try again.");
+            alert.showAndWait()
+            .filter(response -> response == ButtonType.OK)
+            .ifPresent(response -> System.out.println("Null field warning issued: "));
+            System.out.println("A field has not been entered");
+        }
+        else{
             this.event.setEventTitle(eventTitle);
             this.event.setEventDescription(eventDescription);
             String eventDateTimeStr = eventDate.concat(" "+eventTime);
             this.event.setDate(eventDateTimeStr);
             this.event.setDateString(eventDateTimeStr);
+            if(!location.equals("")){
+                this.event.setEventlocation(location);
+            }
             
             if(IP3ver2.events.contains(this.event)) {
                 IP3ver2.events.remove(this.event);
@@ -192,13 +237,6 @@ public class EditEventController implements Initializable {
                 Scene scene = new Scene(viewRoot);
                 IP3ver2.currentStage.setScene(scene);
             }
-        }
-        else {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "One or more fields have been erased. Please fill in these fields before continuing.");
-            alert.showAndWait()
-            .filter(response -> response == ButtonType.OK)
-            .ifPresent(response -> System.out.println("Null field warning issued: "));
-            System.out.println("One or more fields erased");
         }
     }
     
