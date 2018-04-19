@@ -36,13 +36,17 @@
         <Label id="lblDesc" layoutX="169.0" layoutY="202.0" text="Description" textFill="WHITE" AnchorPane.leftAnchor="125.0" />
         <TextArea fx:id="descField" layoutX="253.0" layoutY="202.0" prefHeight="77.0" prefWidth="266.0" AnchorPane.leftAnchor="225.0" />
         <Label layoutX="127.0" layoutY="300.0" text="Location" textFill="WHITE" AnchorPane.leftAnchor="125.0" />
-        <Label layoutX="120.0" layoutY="615.0" text="Attachment" textFill="WHITE" />
-        <Button id="btnBack" fx:id="btnBack1" layoutX="294.0" layoutY="611.0" mnemonicParsing="false" text="Browse Files" />
+        <Label layoutX="42.0" layoutY="624.0" text="Attachment" textFill="WHITE" />
       <WebView fx:id="locationField" layoutX="224.0" layoutY="309.0" prefHeight="248.0" prefWidth="266.0" />
       <Button layoutX="224.0" layoutY="567.0" mnemonicParsing="false" onAction="#findLocation" prefHeight="25.0" prefWidth="266.0" style="-fx-background-color: #6C8B90;" text="Update Location" textFill="WHITE">
          <effect>
             <DropShadow />
          </effect>
       </Button>
+      <HBox fx:id="root" layoutX="116.0" layoutY="611.0" prefHeight="25.0" prefWidth="483.0">
+         <children>
+            <Button id="btnBack" fx:id="btnAddAttachment" mnemonicParsing="false" onAction="#addEventAttachment" text="Browse Files" />
+         </children>
+      </HBox>
     </children>
 </AnchorPane>

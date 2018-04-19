@@ -10,19 +10,10 @@
          Integrate methods with the mvc (important!)
 */
 package RequestMethods;
-import Controllers.GetController;
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import Models.TimelineModel;
-import Models.AllTimelines;
-import Models.EventModel;
-import Models.AllEvents;
-import java.text.ParseException;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 /**
  *
  * @author jidev
@@ -235,10 +226,10 @@ public class GetMethods {
         
     }
     
-    public void sendGetUploadURL(String AttachmentIdKey, String AttachmentIdVal) throws Exception {
+    public URL sendGetUploadURL(String AttachmentIdVal) throws Exception {
         
         HttpURLConnection con = setAuthToken("https://gcu.ideagen-development.com/TimelineEventAttachment/GenerateUploadPresignedUrl", "GET");
-        con.setRequestProperty(AttachmentIdKey, AttachmentIdVal);
+        con.setRequestProperty("AttachmentId", AttachmentIdVal);
         int responseCode = con.getResponseCode();
         System.out.println("Sending GET request to: https://gcu.ideagen-development.com/TimelineEventAttachment/GenerateUploadPresignedUrl" );
         System.out.println("Response code: " + responseCode);
@@ -252,14 +243,15 @@ public class GetMethods {
 			response.append(inputLine);
 		}
 		in.close();
-                System.out.println(response.toString());
+                URL urlresponse = new URL(response.toString());
+                return urlresponse;
         
     }
     
-    public void sendGetDownloadURL(String AttachmentIdKey, String AttachmentIdVal) throws Exception {
+    public URL sendGetDownloadURL(String AttachmentIdVal) throws Exception {
         
         HttpURLConnection con = setAuthToken("https://gcu.ideagen-development.com/TimelineEventAttachment/GenerateGetPresignedUrl", "GET");
-        con.setRequestProperty(AttachmentIdKey, AttachmentIdVal);
+        con.setRequestProperty("AttachmentId", AttachmentIdVal);
         int responseCode = con.getResponseCode();
         System.out.println("Sending GET request to: https://gcu.ideagen-development.com/TimelineEventAttachment/GenerateGetPresignedUrl" );
         System.out.println("Response code: " + responseCode);
@@ -273,7 +265,8 @@ public class GetMethods {
 			response.append(inputLine);
 		}
 		in.close();
-                System.out.println(response.toString());
+                URL urlresponse = new URL(response.toString());
+                return urlresponse;
         
     }
     
@@ -298,10 +291,10 @@ public class GetMethods {
         
     }
     
-    public void sendGetAllAttachments(String TimelineEventIdKey, String TimelineEventIdVal) throws Exception {
+    public String[] sendGetAllAttachments(String TimelineEventIdVal) throws Exception {
         
         HttpURLConnection con = setAuthToken("https://gcu.ideagen-development.com/TimelineEventAttachment/GetAttachments", "GET");
-        con.setRequestProperty(TimelineEventIdKey, TimelineEventIdVal);
+        con.setRequestProperty("TimelineEventId", TimelineEventIdVal);
         int responseCode = con.getResponseCode();
         System.out.println("Sending GET request to: https://gcu.ideagen-development.com/TimelineEventAttachment/GetAttachments" );
         System.out.println("Response code: " + responseCode);
@@ -315,7 +308,10 @@ public class GetMethods {
 			response.append(inputLine);
 		}
 		in.close();
-                System.out.println(response.toString());
+                String value = (response.toString());
+                String[] separatedValue = value.split("}");
+                
+                return separatedValue;
         
     }
 }

@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package ip3ver2;
+import Controllers.ViewEventController;
 import Models.EventModel;
 import Models.TimelineModel;
 import RequestMethods.GetMethods;
@@ -22,12 +23,14 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.HostServices;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class IP3ver2 extends Application {
 
     public static Stage currentStage;
+    public static HostServices services;
     public static ObservableList<TimelineModel> timelines = FXCollections.observableArrayList();
     public static ObservableList<EventModel> events = FXCollections.observableArrayList();
     public static ObservableList<EventModel> linkedEvents = FXCollections.observableArrayList();
@@ -36,7 +39,9 @@ public class IP3ver2 extends Application {
     
     @Override
     public void start(Stage primaryStage) throws IOException, Exception {
-        
+
+        HostServices services = getHostServices();
+        IP3ver2.services = services;
         createTimelineObjects();
         createEventObjects();
         URL url = getClass().getResource("/GUI/TableView.fxml");
@@ -52,22 +57,23 @@ public class IP3ver2 extends Application {
     public void createTimelineObjects() throws Exception {
         
         String[] separatedValue = get.sendGetAllTimelines();
-        for(int i =0; i<separatedValue.length-1; i++) {
+        for(int i =0; i<separatedValue.length; i++) {
             
                     String newString = separatedValue[i];
                     String finalNewString = newString.replaceAll("\"","");
                     
-                    Scanner readString = new Scanner(finalNewString);
-                    readString.useDelimiter(",");
                     String title;
                     String timestamp;
                     String id;
+                    
+                try (Scanner readString = new Scanner(finalNewString)) {
+                    readString.useDelimiter(",");
                     title = readString.next();
                     timestamp = readString.next();
                     readString.next();
                     id = readString.next();
                     readString.next();
-                    readString.close();
+            
                     
                     String finalTitle = title.replace("Title:", "");
                     finalTitle = finalTitle.replaceAll("\\{", "");
@@ -85,6 +91,10 @@ public class IP3ver2 extends Application {
                     TimelineModel timeline = new TimelineModel(finalId, finalTitle, longTimestamp);
                     timelines.add(timeline);    
                 }
+                catch(NoSuchElementException e) {
+                    System.out.println("End of List.");
+                }
+        }
     }
     
     public void createEventObjects() throws Exception {

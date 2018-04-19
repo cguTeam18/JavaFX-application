@@ -11,21 +11,15 @@ package Controllers;
  */
 import Models.TimelineModel;
 import Models.EventModel;
-import Models.AllTimelines;
 import RequestMethods.GetMethods;
 import RequestMethods.PutMethods;
 import ip3ver2.IP3ver2;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Callback;
 
 import java.net.URL;
 import java.text.ParseException;

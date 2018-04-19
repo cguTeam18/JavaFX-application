@@ -38,7 +38,7 @@ public class EventModel {
         this.eventId = randomStringGen();
         this.eventTitle = ("Untitled");
         this.eventDescription = ("Description");
-        this.location = ("Unknown");
+        this.location = ("Location not known");
         this.eventAttachmentId = randomStringGen();
         this.eventAttachmentTitle = ("Attachment title");
         this.date = date;

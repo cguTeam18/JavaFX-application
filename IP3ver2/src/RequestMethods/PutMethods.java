@@ -11,6 +11,7 @@ package RequestMethods;
  */
 import java.io.*;
 import java.net.*;
+import java.util.Random;
 
 public class PutMethods {
 
@@ -23,6 +24,21 @@ public class PutMethods {
         String authToken = "ddd8af7c-3e22-4d31-aefa-3e834071c954";
         this.tenantId = tenantId;
         this.authToken = authToken;
+    }
+    
+    public final String randomStringGen() {
+        Random random = new Random();
+        String characters = "1234567890ABCDEFGHIJK";
+        StringBuilder sb = new StringBuilder();
+        
+        
+        for(int i = 0; i < 25; i++) {
+            sb.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        
+        String result = sb.toString();
+        System.out.println(result);
+        return result;
     }
     /**
     public static void main(String[] args) throws Exception {
@@ -428,20 +444,20 @@ public class PutMethods {
         System.out.println(response.toString());
     }
 
-    public void createTimelineEventAttachment (String TimelineEventIdKey, String TimelineEventIdVal, String AttachmentIdKey, String AttachmentIdVal, String TitleKey, String TitleVal) throws Exception {
+   public void createTimelineEventAttachment (String TimelineEventIdVal, String TitleVal) throws Exception {
 
         URL url = new URL("https://gcu.ideagen-development.com/TimelineEventAttachment/Create");
         HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-
+        String attachmentIdVal = randomStringGen();
         httpCon.setDoOutput(true);
         httpCon.setRequestMethod("PUT");
         httpCon.setRequestProperty("tenantId", tenantId);
         httpCon.setRequestProperty("AuthToken", authToken);
-        httpCon.setRequestProperty(TimelineEventIdKey, TimelineEventIdVal);
-        httpCon.setRequestProperty(AttachmentIdKey, AttachmentIdVal);
-        httpCon.setRequestProperty(TitleKey, TitleVal);
+        httpCon.setRequestProperty("TimelineEventId", TimelineEventIdVal);
+        httpCon.setRequestProperty("AttachmentId", attachmentIdVal);
+        httpCon.setRequestProperty("Title", TitleVal);
         OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream());
-        out.write("{'TenantId':'Team18', 'AuthToken':'ddd8af7c-3e22-4d31-aefa-3e834071c954', "+"'"+TimelineEventIdKey+"':'"+TimelineEventIdVal+"','"+AttachmentIdKey+"':'"+AttachmentIdVal+"','"+TitleKey+"':'"+TitleVal+"'"+"}");
+        out.write("{'TenantId':'Team18', 'AuthToken':'ddd8af7c-3e22-4d31-aefa-3e834071c954', "+"'TimelineEventId':'"+TimelineEventIdVal+"','AttachmentId':'"+attachmentIdVal+"','Title':'"+TitleVal+"'"+"}");
         out.close();
 
         BufferedReader in = new BufferedReader(
@@ -484,7 +500,7 @@ public class PutMethods {
 
     }
 
-    public void deleteTitleTimelineEventAttachment (String AttachmentIdKey, String AttachmentIdVal) throws Exception {
+    public void deleteTitleTimelineEventAttachment (String AttachmentIdVal) throws Exception {
 
         URL url = new URL("https://gcu.ideagen-development.com/TimelineEventAttachment/Delete");
         HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
@@ -492,10 +508,10 @@ public class PutMethods {
         httpCon.setRequestMethod("PUT");
         httpCon.setRequestProperty("tenantId", tenantId);
         httpCon.setRequestProperty("AuthToken", authToken);
-        httpCon.setRequestProperty(AttachmentIdKey, AttachmentIdKey);
+        httpCon.setRequestProperty("AttachmentId", AttachmentIdVal);
         OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream());
 
-        out.write("{'TenantId':'Team18', 'AuthToken':'ddd8af7c-3e22-4d31-aefa-3e834071c954', "+"'"+AttachmentIdKey+"':'"+AttachmentIdVal+"'}");
+        out.write("{'TenantId':'Team18', 'AuthToken':'ddd8af7c-3e22-4d31-aefa-3e834071c954', "+"'AttachmentId':'"+AttachmentIdVal+"'}");
         System.out.println("Sending PUT request to: " + url);
         //System.out.println("TenantId : " + tenantId + " AuthToken : " + authToken);
         //System.out.println("TimelineEventIdKey : " + TimelineEventIdKey + " TimelineEventIdVal : " + TimelineEventIdVal);

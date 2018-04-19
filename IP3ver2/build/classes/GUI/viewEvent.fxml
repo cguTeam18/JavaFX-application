@@ -35,12 +35,16 @@
         <TextArea fx:id="descArea" editable="false" layoutX="106.0" layoutY="166.0" prefHeight="146.0" prefWidth="547.0" AnchorPane.rightAnchor="25.0" />
         <Label id="lblLoc" layoutX="27.0" layoutY="338.0" text="Location" textFill="WHITE" AnchorPane.leftAnchor="25.0" />
         <Label id="lblAttach" layoutX="328.0" layoutY="338.0" text="Attachments" textFill="WHITE" />
-        <TextArea editable="false" layoutX="320.0" layoutY="364.0" prefHeight="97.0" prefWidth="245.0" AnchorPane.rightAnchor="25.0" />
         <TextArea fx:id="dateArea" editable="false" layoutX="395.0" layoutY="57.0" prefHeight="25.0" prefWidth="196.0" />
         <Button fx:id="prevEventBtn" layoutX="395.0" layoutY="14.0" mnemonicParsing="false" onAction="#prevLinkedEvent" style="-fx-background-color: #6C8B90;" text="Previous Event" textFill="#fffdfd">
          <effect>
             <DropShadow />
          </effect></Button>
       <WebView fx:id="locationArea" layoutX="29.0" layoutY="364.0" prefHeight="264.0" prefWidth="245.0" />
+      <VBox fx:id="root" layoutX="328.0" layoutY="364.0" prefHeight="264.0" prefWidth="245.0">
+         <children>
+            <Button fx:id="btnViewAttachment" mnemonicParsing="false" onAction="#viewAttachment" prefHeight="25.0" prefWidth="134.0" text="View Attachment" />
+         </children>
+      </VBox>
     </children>
 </AnchorPane>
