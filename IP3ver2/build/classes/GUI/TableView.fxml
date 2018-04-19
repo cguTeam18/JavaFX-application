@@ -31,7 +31,7 @@
               <Image url="@Aileron.png" />
           </image>
       </ImageView>
-              <Button layoutX="214.0" layoutY="23.0" prefHeight="25.0" prefWidth="65.0" style="-fx-background-color: #6C8B90;" text="Add" textFill="WHITE">
+              <Button layoutX="214.0" layoutY="23.0" onAction="#addTimelineToRows" prefHeight="25.0" prefWidth="65.0" style="-fx-background-color: #6C8B90;" text="Add" textFill="WHITE">
          <effect>
             <DropShadow />
          </effect>

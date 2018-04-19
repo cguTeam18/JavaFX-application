@@ -3,6 +3,7 @@
 <?import javafx.scene.web.*?>
 <?import javafx.scene.effect.*?>
 <?import java.lang.*?>
+<?import java.util.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
@@ -41,9 +42,9 @@
             <DropShadow />
          </effect></Button>
       <WebView fx:id="locationArea" layoutX="29.0" layoutY="364.0" prefHeight="264.0" prefWidth="245.0" />
-      <VBox fx:id="root" layoutX="328.0" layoutY="364.0" prefHeight="264.0" prefWidth="245.0">
+      <VBox fx:id="root" layoutX="322.0" layoutY="364.0" prefHeight="200.0" prefWidth="239.0">
          <children>
-            <Button fx:id="btnViewAttachment" mnemonicParsing="false" onAction="#viewAttachment" prefHeight="25.0" prefWidth="134.0" text="View Attachment" />
+            <Button fx:id="btnViewAttachment" mnemonicParsing="false" onAction="#viewAttachment" prefHeight="25.0" prefWidth="107.0" text="View Attachment" />
          </children>
       </VBox>
     </children>
